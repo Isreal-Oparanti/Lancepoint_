@@ -51,8 +51,6 @@ const Hero = () => {
     }, // Left top
   ];
 
-  
-
   return (
     <div className="relative flex items-center justify-between flex-col md:flex-row py-8 sm:py-12 bg-transparent min-h-[400px] sm:min-h-[500px]">
       {/* Main content */}
@@ -68,9 +66,6 @@ const Hero = () => {
           Match with top talent or clients, submit your work with confidence,
           and get paid seamlessly, all in one platform
         </p>
-        <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-          <ZKLogin />
-        </div>
       </div>
 
       {/* Profile images floating around */}
@@ -80,7 +75,7 @@ const Hero = () => {
           <div className="absolute w-[320px] h-[320px] md:w-[380px] md:h-[380px] lg:w-[440px] lg:h-[440px] rounded-full border border-white/50"></div> */}
 
         {/* Play button */}
-          {/* <button 
+        {/* <button 
             className="absolute z-20 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-full flex items-center justify-center cursor-pointer shadow-lg"
           >
             <div className="text-purple-500">
@@ -111,7 +106,9 @@ const Hero = () => {
             </div>
           ))} */}
 
-        <div className="atom-container flex items-center justify-center"> {/* Add a container element */}
+        <div className="atom-container flex items-center justify-center">
+          {" "}
+          {/* Add a container element */}
           <div className="atom-orbit w-full h-full">
             <div className="electron"></div>
             <div className="electron2"></div>

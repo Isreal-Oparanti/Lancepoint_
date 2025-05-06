@@ -1,32 +1,21 @@
+import { createGig } from "@/actions/createGig";
 import { getCollection } from "@/lib/db";
-import gigSchema from "@/lib/CreateGig";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    const result = await createGig(body);
 
-    const validatedData = gigSchema.safeParse(body);
-
-    if (!validatedData.success) {
-      return NextResponse.json(
-        { error: validatedData.error.errors },
-        { status: 400 }
-      );
+    if (!result.success) {
+      return NextResponse.json({ error: result.errors }, { status: 400 });
     }
-
-    const collection = await getCollection("gigs");
-    if (!collection) {
-      throw new Error("Database connection failed");
-    }
-
-    const result = await collection.insertOne(validatedData.data);
 
     return NextResponse.json(
       {
         success: true,
         message: "Job created successfully",
-        jobId: result.insertedId,
+        jobId: result.gigId,
       },
       { status: 201 }
     );
@@ -47,7 +36,6 @@ export async function GET() {
     }
 
     const jobs = await collection.find({}).toArray();
-
     return NextResponse.json(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);

@@ -1,8 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useZkLogin } from "use-sui-zklogin";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+async function fetchSuiToUsdRate() {
+  try {
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=sui&vs_currencies=usd"
+    );
+    const data = await response.json();
+    return data.sui?.usd || 0.5;
+  } catch (error) {
+    console.error("Error fetching SUI price:", error);
+    return 0.5;
+  }
+}
 
 export default function NewGig() {
+  const { accounts } = useZkLogin({
+    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
+    generateSalt: async () => {
+      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
+    },
+  });
+  const zksub = accounts?.[0]?.sub;
+
   const [formData, setFormData] = useState({
     services: [],
     jobTitle: "",
@@ -10,18 +34,37 @@ export default function NewGig() {
     startDate: "",
     endDate: "",
     payment: {
-      token: "",
-      amount: 0,
+      token: "SUI",
+      amount: "",
+      usdAmount: 0,
     },
     milestones: [],
+    userId: zksub || "",
   });
-
+  const router = useRouter();
+  const [suiRate, setSuiRate] = useState(0.5);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentService, setCurrentService] = useState("");
   const [currentMilestone, setCurrentMilestone] = useState({
     header: "",
     body: "",
     date: "",
   });
+
+  useEffect(() => {
+    fetchSuiToUsdRate().then((rate) => setSuiRate(rate));
+  }, []);
+
+  useEffect(() => {
+    const amount = parseFloat(formData.payment.amount) || 0;
+    setFormData((prev) => ({
+      ...prev,
+      payment: {
+        ...prev.payment,
+        usdAmount: parseFloat((amount * suiRate).toFixed(2)),
+      },
+    }));
+  }, [formData.payment.amount, suiRate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,8 +75,7 @@ export default function NewGig() {
         ...formData,
         payment: {
           ...formData.payment,
-          [paymentField]:
-            paymentField === "amount" ? parseFloat(value) || 0 : value,
+          [paymentField]: paymentField === "amount" ? value : value,
         },
       });
     } else {
@@ -51,6 +93,9 @@ export default function NewGig() {
         services: [...formData.services, currentService.trim()],
       });
       setCurrentService("");
+      toast.success("Service added successfully");
+    } else {
+      toast.error("Please enter a service name");
     }
   };
 
@@ -65,35 +110,55 @@ export default function NewGig() {
         body: "",
         date: "",
       });
+      toast.success("Milestone added successfully");
+    } else {
+      toast.error("Please fill all milestone fields");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    if (!formData.userId) {
+      toast.error("Please connect your wallet to create a gig");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      const response = await fetch("/api/jobs", {
+      const response = await fetch("/api/new-gig", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          payment: {
+            ...formData.payment,
+            amount: parseFloat(formData.payment.amount) || 0,
+          },
+        }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error creating job:", errorData);
-        alert("Failed to create job");
+        console.error("Error creating job:", data.error);
+        toast.error(
+          `Failed to create job: ${data.error?.message || "Unknown error"}`
+        );
         return;
       }
 
-      const data = await response.json();
-      alert("Job created successfully!");
+      toast.success("Job created successfully!");
       console.log("Job created:", data);
-      // Reset form or redirect as needed
+      router.push("/browse-gigs");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("An error occurred while creating the job");
+      toast.error("An error occurred while creating the job");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -109,106 +174,141 @@ export default function NewGig() {
           <p className="font-medium text-[14px]">
             What talent are you looking for?
           </p>
-          <input
-            value={currentService}
-            onChange={(e) => setCurrentService(e.target.value)}
-            placeholder="What services will you be offering?"
-            className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
-          />
-          <button
-            type="button"
-            onClick={handleServiceAdd}
-            className="mt-2 text-[12px] text-center rounded-md font-medium"
-          >
-            Add Service
-          </button>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          {formData.services.map((service, index) => (
-            <div
-              key={index}
-              className="p-1 bg-black text-white w-[9rem] text-[12px] text-center rounded-md font-medium"
+          <input type="hidden" name="userId" value={formData.userId} />
+          <div className="flex gap-2 mt-5">
+            <input
+              value={currentService}
+              onChange={(e) => setCurrentService(e.target.value)}
+              placeholder="Service name"
+              className="flex-1 p-5 border border-[#ACACAC] rounded-md"
+            />
+            <button
+              type="button"
+              onClick={handleServiceAdd}
+              className="bg-black text-white px-4 rounded-md font-medium cursor-pointer"
             >
-              {service} X
-            </div>
-          ))}
+              Add
+            </button>
+          </div>
         </div>
-
+        {formData.services.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {formData.services.map((service, index) => (
+              <div
+                key={index}
+                className="relative group pl-3 pr-6 py-1.5 bg-black text-white text-sm rounded-md flex items-center p-5"
+              >
+                {service}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      services: prev.services.filter((_, i) => i !== index),
+                    }));
+                    toast.success("Service removed");
+                  }}
+                  className="absolute right-1 text-white opacity-70 hover:opacity-100 focus:outline-none p-1"
+                  aria-label={`Remove ${service}`}
+                >
+                  <span className="block w-4 h-4 cursor-pointer">×</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <div>
-          <p className="font-medium text-[14px]">Job Title</p>
+          <label className="font-medium text-[14px] block">Job Title</label>
           <input
             name="jobTitle"
             value={formData.jobTitle}
             onChange={handleChange}
             placeholder="Job Title"
-            className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+            className="w-full p-5 border border-[#ACACAC] rounded-md mt-2"
             required
           />
         </div>
 
         <div>
-          <p className="font-medium text-[14px]">Job Description</p>
+          <label className="font-medium text-[14px] block">
+            Job Description
+          </label>
           <textarea
             name="jobDescription"
             value={formData.jobDescription}
             onChange={handleChange}
             placeholder="Describe the job in detail"
-            className="w-full p-3 h-32 rounded-md resize-none border border-[#ACACAC] mt-5"
+            className="w-full p-3 h-32 rounded-md resize-none border border-[#ACACAC] mt-2"
             required
-          ></textarea>
+          />
         </div>
 
-        <div className="flex items-center space-x-10 w-full">
-          <div className="flex-1">
-            <p className="font-medium text-[14px]">Start Date</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="font-medium text-[14px] block">Start Date</label>
             <input
               name="startDate"
               type="date"
               value={formData.startDate}
               onChange={handleChange}
-              className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+              className="w-full p-5 border border-[#ACACAC] rounded-md mt-2"
               required
             />
           </div>
-          <div className="flex-1">
-            <p className="font-medium text-[14px]">End Date</p>
+          <div>
+            <label className="font-medium text-[14px] block">End Date</label>
             <input
               name="endDate"
               type="date"
               value={formData.endDate}
               onChange={handleChange}
-              className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+              className="w-full p-5 border border-[#ACACAC] rounded-md mt-2"
               required
             />
           </div>
         </div>
 
         <div className="text-2xl font-semibold text-left">Payment</div>
-        <span className="font-medium text-[14px]">
+        <p className="font-medium text-[14px]">
           Specify the amount to be paid for the job
-        </span>
+        </p>
 
-        <div className="flex items-center space-x-10 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
+            <label className="font-medium text-[14px] block">Token</label>
             <input
               name="payment.token"
               value={formData.payment.token}
-              onChange={handleChange}
-              placeholder="Token (e.g., USDC, ETH)"
-              className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
-              required
+              readOnly
+              className="w-full p-5 border border-[#ACACAC] rounded-md mt-2 bg-gray-100"
             />
           </div>
           <div>
+            <label className="font-medium text-[14px] block">
+              Amount (SUI)
+            </label>
             <input
               name="payment.amount"
               type="number"
               value={formData.payment.amount}
               onChange={handleChange}
-              placeholder="Amount"
-              className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+              placeholder="0.00"
+              className="w-full p-5 border border-[#ACACAC] rounded-md mt-2"
               required
+              step="0.01"
+              min="0"
+            />
+          </div>
+          <div>
+            <label className="font-medium text-[14px] block">
+              USD Equivalent
+            </label>
+            <input
+              name="payment.usdAmount"
+              type="number"
+              value={formData.payment.usdAmount}
+              readOnly
+              className="w-full p-5 border border-[#ACACAC] rounded-md mt-2 bg-gray-100"
             />
           </div>
         </div>
@@ -225,7 +325,7 @@ export default function NewGig() {
               })
             }
             placeholder="Milestone Header"
-            className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+            className="w-full p-5 border border-[#ACACAC] rounded-md"
           />
           <textarea
             value={currentMilestone.body}
@@ -233,42 +333,66 @@ export default function NewGig() {
               setCurrentMilestone({ ...currentMilestone, body: e.target.value })
             }
             placeholder="Milestone Description"
-            className="w-full p-3 h-32 rounded-md resize-none border border-[#ACACAC] mt-5"
-          ></textarea>
-          <input
-            type="date"
-            value={currentMilestone.date}
-            onChange={(e) =>
-              setCurrentMilestone({ ...currentMilestone, date: e.target.value })
-            }
-            placeholder="Due Date"
-            className="w-full p-5 border border-[#ACACAC] rounded-md mt-5"
+            className="w-full p-3 h-32 rounded-md resize-none border border-[#ACACAC]"
           />
-          <button
-            type="button"
-            onClick={handleMilestoneAdd}
-            className="bg-gray-200 rounded-md px-4 py-2"
-          >
-            Add Milestone
-          </button>
+          <div className="flex gap-2">
+            <input
+              type="date"
+              value={currentMilestone.date}
+              onChange={(e) =>
+                setCurrentMilestone({
+                  ...currentMilestone,
+                  date: e.target.value,
+                })
+              }
+              placeholder="Due Date"
+              className="flex-1 p-5 border border-[#ACACAC] rounded-md"
+            />
+            <button
+              type="button"
+              onClick={handleMilestoneAdd}
+              className="bg-black text-white px-4 rounded-md cursor-pointer"
+            >
+              Add Milestone
+            </button>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {formData.milestones.map((milestone, index) => (
-            <div key={index} className="border p-4 rounded-md">
-              <h3 className="font-bold">{milestone.header}</h3>
-              <p>{milestone.body}</p>
-              <p className="text-sm text-gray-500">Due: {milestone.date}</p>
-            </div>
-          ))}
-        </div>
+        {formData.milestones.length > 0 && (
+          <div className="space-y-4">
+            {formData.milestones.map((milestone, index) => (
+              <div key={index} className="border p-4 rounded-md relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      milestones: formData.milestones.filter(
+                        (_, i) => i !== index
+                      ),
+                    });
+                  }}
+                  className="absolute top-2 right-2 text-gray-500 hover:text-black"
+                >
+                  ×
+                </button>
+                <h3 className="font-bold">{milestone.header}</h3>
+                <p className="mt-1">{milestone.body}</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Due: {new Date(milestone.date).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <div className="flex items-center justify-center cursor-pointer">
+        <div className="flex justify-center pt-4">
           <button
-            className="bg-black rounded-2xl text-white p-1 w-[16rem]"
+            className="bg-black rounded-2xl text-white py-3 px-8 text-lg font-medium disabled:opacity-50 cursor-pointer"
             type="submit"
+            disabled={isSubmitting}
           >
-            Continue
+            {isSubmitting ? "Creating..." : "Create Gig"}
           </button>
         </div>
       </form>

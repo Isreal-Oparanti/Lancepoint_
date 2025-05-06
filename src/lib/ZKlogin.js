@@ -5,6 +5,7 @@ import { SuiClient, getFullnodeUrl } from "@mysten/sui.js/client";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
+import { registerWithZKLogin } from "@/actions/auth";
 
 const providersConfig = {
   google: {
@@ -34,8 +35,10 @@ export default function ZKLogin() {
   const [localAccounts, setLocalAccounts] = useState(null);
   const [localAddress, setLocalAddress] = useState(null);
   const [localIsLoaded, setLocalIsLoaded] = useState(false);
-
+  const [isRegistering, setIsRegistering] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [registrationCompleted, setRegistrationCompleted] = useState(false);
+
   const { isLoaded, address, accounts } = useZkLogin({
     urlZkProver: "https://prover-dev.mystenlabs.com/v1",
     generateSalt: async () => {
@@ -46,24 +49,49 @@ export default function ZKLogin() {
   const [balance, setBalance] = useState(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
-  useEffect(() => {
-    setLocalIsLoaded(isLoaded);
-    setLocalAddress(address);
-    setLocalAccounts(accounts);
-  }, [isLoaded, address, accounts]);
-
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (localAddress && pathname === "/") {
-      router.push("/create-new-gig");
-    }
-  }, [localAddress, pathname]);
-
-  useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setLocalIsLoaded(isLoaded);
+    setLocalAddress(address);
+    setLocalAccounts(accounts);
+
+    if (isLoaded && address && accounts?.[0]?.sub && !registrationCompleted) {
+      handleRegistration(address, accounts[0].sub);
+    }
+  }, [isLoaded, address, accounts, registrationCompleted]);
+
+  const handleRegistration = async (walletAddress, zksub) => {
+    setIsRegistering(true);
+    try {
+      const result = await registerWithZKLogin(zksub, walletAddress);
+
+      if (result?.error) {
+        toast.error(result.error);
+      } else if (result?.success) {
+        setRegistrationCompleted(true);
+        if (pathname === "/") {
+          router.push("/dashboard");
+        }
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error("Failed to register user");
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  useEffect(() => {
+    if (localAddress && pathname === "/" && registrationCompleted) {
+      router.push("/dashboard");
+    }
+  }, [localAddress, pathname, registrationCompleted]);
 
   useEffect(() => {
     if (!mounted || !localAddress) return;
@@ -88,12 +116,18 @@ export default function ZKLogin() {
 
   const handleZkLogin = async (provider) => {
     setIsLoggingIn(true);
-    await beginZkLogin({
-      suiClient,
-      provider,
-      providersConfig,
-    });
-    setIsLoggingIn(false);
+    try {
+      await beginZkLogin({
+        suiClient,
+        provider,
+        providersConfig,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed");
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   const handleClearState = () => {
@@ -101,13 +135,19 @@ export default function ZKLogin() {
     setLocalAddress(null);
     setLocalAccounts(null);
     setBalance(null);
-    window.location.reload();
+    setRegistrationCompleted(false);
+    window.location.href = "/";
   };
 
   const handleCopyAddress = async () => {
     if (localAddress) {
-      await navigator.clipboard.writeText(localAddress);
-      toast.success("Address copied!");
+      try {
+        await navigator.clipboard.writeText(localAddress);
+        toast.success("Address copied!");
+      } catch (error) {
+        console.error("Copy failed:", error);
+        toast.error("Failed to copy address");
+      }
     }
   };
 
@@ -126,11 +166,13 @@ export default function ZKLogin() {
       {!localAddress ? (
         <button
           onClick={() => handleZkLogin("google")}
-          disabled={isLoggingIn || !localIsLoaded}
-          className="bg-black text-white flex align-center justify-center rounded-md py-2 px-4 font-medium  border border-white transition duration-300 text-center cursor-pointer"
+          disabled={isLoggingIn || !localIsLoaded || isRegistering}
+          className="bg-black text-white flex align-center justify-center rounded-md py-2 px-4 font-medium border border-white transition duration-300 text-center cursor-pointer"
         >
           {isLoggingIn
             ? "Logging in..."
+            : isRegistering
+            ? "Setting up account..."
             : localIsLoaded
             ? "ZKLogin"
             : "Loading..."}

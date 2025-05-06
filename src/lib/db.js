@@ -27,7 +27,7 @@ async function getDB(dbName) {
 }
 
 export async function getCollection(collectionName) {
-  const db = await getDB("Lancepoint");
+  const db = await getDB("LancepointData");
   if (db) return db.collection(collectionName);
 
   return null;
