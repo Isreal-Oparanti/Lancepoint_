@@ -3,17 +3,14 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <div>
-      <header className=" flex items-center justify-between p-6 bg-black text-white">
-        <div className="text-2xl font-bold flex items-center space-x-2">
-          <img src="/Lance@3x3.png" />
-          <span>Lancepoint</span>
-        </div>
-        <nav className="space-x-6">
+    <header className="fixed w-full top-0 right-0 bg-white text-white shadow-md  border-gray-700 p-2">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-end">
+          
+        <nav>
           <ZKLogin />
         </nav>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 };
 

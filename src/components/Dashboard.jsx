@@ -41,7 +41,7 @@ const data = {
 // Updated chart options
 const options = {
   responsive: true,
-  maintainAspectRatio: false, // Allow custom height
+  maintainAspectRatio: false, 
   plugins: {
     legend: {
       display: false,

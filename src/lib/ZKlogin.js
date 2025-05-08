@@ -162,19 +162,19 @@ export default function ZKLogin() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex justify-end">
       {!localAddress ? (
         <button
           onClick={() => handleZkLogin("google")}
           disabled={isLoggingIn || !localIsLoaded || isRegistering}
-          className="bg-black text-white flex align-center justify-center rounded-md py-2 px-4 font-medium border border-white transition duration-300 text-center cursor-pointer"
+          className="bg-black text-white flex justify-end rounded-md py-2 px-4 font-medium transition duration-300 text-center cursor-pointer"
         >
           {isLoggingIn
             ? "Logging in..."
             : isRegistering
             ? "Setting up account..."
             : localIsLoaded
-            ? "ZKLogin"
+            ? "Login with ZK"
             : "Loading..."}
         </button>
       ) : (
@@ -183,11 +183,11 @@ export default function ZKLogin() {
             <div className="flex items-center gap-4 flex-wrap">
               <button
                 onClick={handleCopyAddress}
-                className="bg-black px-3 py-1 rounded text-sm cursor-pointer"
+                className="bg-black  text-white px-3 py-1 rounded text-sm cursor-pointer"
               >
                 {shortenAddress(localAddress)}
               </button>
-              <p className="text-sm">
+              <p className="text-sm text-black ">
                 {isLoadingBalance
                   ? "Loading..."
                   : balance === "Error"
@@ -196,7 +196,7 @@ export default function ZKLogin() {
               </p>
               <button
                 onClick={handleClearState}
-                className="bg-white border border-black px-3 py-1 text-sm rounded cursor-pointer transition text-black"
+                className="bg-white border hover:bg-black hover:text-white  px-3 py-1 text-sm rounded cursor-pointer transition text-black"
               >
                 Logout
               </button>

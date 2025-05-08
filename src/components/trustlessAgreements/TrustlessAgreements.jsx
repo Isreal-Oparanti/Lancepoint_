@@ -22,12 +22,12 @@ const TrustlessAgreements = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
         {/* Left column - Text */}
         <div>
-          <h3 className="text-[29px] sm:text-[39px] font-bold mb-6">
+          <h3 className="text-[40px] sm:text-[39px] font-bold mb-6">
             Experience freelancing<br />
             with trustless agreements
           </h3>
           
-          <p className="mb-6 text-[16px] sm:text-base">
+          <p className="mb-6 text-[40px] sm:text-base">
             At Lancepoint, every contract between client and freelancer is recorded on-chain. We use AI to review deliverables based on agreed terms—automatically approving or flagging submissions for human review. No middlemen. Just pure, transparent resolution.
           </p>
           

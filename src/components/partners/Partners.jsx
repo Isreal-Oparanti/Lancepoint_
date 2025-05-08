@@ -22,6 +22,7 @@ const Partners = () => {
 
   return (
     <div className="py-5 sm:py-9">
+      <div className='font-bold text-3xl mb-10 text-center'>Trusted by Top Brands</div>
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 md:gap-24 place-items-center">
           {partners.map((partner) => (
