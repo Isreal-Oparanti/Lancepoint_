@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useZkLogin } from "use-sui-zklogin";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
+import {
+  Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
+} from "@coinbase/onchainkit/identity";
 async function fetchSuiToUsdRate() {
   try {
     const response = await fetch(
@@ -26,6 +32,9 @@ export default function NewGig() {
     },
   });
   const zksub = accounts?.[0]?.sub;
+  const shortAddress = localStorage.getItem("shortWalletAddress");
+
+  console.log("Base:", shortAddress);
 
   const [formData, setFormData] = useState({
     services: [],
@@ -39,7 +48,7 @@ export default function NewGig() {
       usdAmount: 0,
     },
     milestones: [],
-    userId: zksub || "",
+    userId: shortAddress || "",
   });
   const router = useRouter();
   const [suiRate, setSuiRate] = useState(0.5);

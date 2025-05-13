@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 export async function createSession(
   userId,
-  authMethod = "zklogin",
+  authMethod = "baseAuth",
   walletAddress = null
 ) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);

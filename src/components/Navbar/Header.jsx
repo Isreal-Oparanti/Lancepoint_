@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ZKLogin from "@/lib/ZKlogin";
+import { WalletComponents } from "../ConnectWallet";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,7 @@ const Header = () => {
             Lancepoint
           </span>
         </div>
+        <WalletComponents />
 
         {/* Desktop Navigation */}
         {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
@@ -57,7 +59,7 @@ const Header = () => {
         {/* Sign Up Button */}
         <div className="hidden md:block">
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-between">
-            <ZKLogin />
+            {/* <ZKLogin /> */}
           </div>
         </div>
 
@@ -104,7 +106,8 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
-            <ZKLogin />
+            {/* <ZKLogin /> */}
+            <WalletComponents />
 
             {/* <Link
               href="/"
