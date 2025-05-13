@@ -8,9 +8,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="flex min-h-screen bg-gray-50">
-        <Providers>
-          <BaseNoAuth>{children}</BaseNoAuth>
-        </Providers>
+        <BaseNoAuth>
+          <Providers>{children}</Providers>
+        </BaseNoAuth>
         <Toaster position="top-center" reverseOrder={false} />
       </body>
     </html>

@@ -1,19 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useZkLogin } from "use-sui-zklogin";
+
 import { toast } from "react-hot-toast";
 
 const BrowseGigs = () => {
-  const { accounts } = useZkLogin({
-    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
-    generateSalt: async () => {
-      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
-    },
-  });
+  const [wallet, setWallet] = useState(null);
 
-  const zksub = accounts?.[0]?.sub;
-  console.log("ZK Sub:", zksub);
   const [gigs, setGigs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -21,6 +14,13 @@ const BrowseGigs = () => {
   const [milestones, setMilestones] = useState([]);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const address = localStorage.getItem("shortWalletAddress");
+      setWallet(address);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchGigData = async () => {
@@ -38,14 +38,14 @@ const BrowseGigs = () => {
     };
 
     fetchGigData();
-  }, [zksub]);
+  }, [wallet]);
 
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    formData.append("applicantId", zksub);
+    formData.append("applicantId", wallet);
 
     setApplying(true);
 
@@ -105,7 +105,7 @@ const BrowseGigs = () => {
   return (
     <div className="px-4">
       {gigs.map((gig) => {
-        const isOwner = gig.userId === zksub;
+        const isOwner = gig.userId === wallet;
 
         return (
           <div key={gig._id} className="flex justify-center mt-10 mb-10">

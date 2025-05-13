@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ZKLogin from "@/lib/ZKlogin";
 import { WalletComponents } from "../ConnectWallet";
 
 const Header = () => {
@@ -33,7 +32,6 @@ const Header = () => {
           </span>
         </div>
         <WalletComponents />
-
         {/* Desktop Navigation */}
         {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
           <Link

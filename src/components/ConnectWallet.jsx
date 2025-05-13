@@ -18,11 +18,12 @@ import {
 } from "@coinbase/onchainkit/identity";
 import { color } from "@coinbase/onchainkit/theme";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { registerWithBaseAuth } from "@/actions/baseAuth";
 
 export function WalletComponents() {
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [checkingConnection, setCheckingConnection] = useState(false);
 
@@ -37,14 +38,18 @@ export function WalletComponents() {
 
           if (address) {
             const slicedAddress = address.slice(0, 10);
-
             localStorage.setItem("shortWalletAddress", slicedAddress);
+            localStorage.setItem("fullAddress", address);
 
             console.log("Connected wallet address:", address);
             console.log("Shortened address stored:", slicedAddress);
 
             await registerWithBaseAuth(address);
-            router.push("/dashboard");
+
+            // Check if we're on the home page
+            if (pathname === "/") {
+              router.push("/dashboard");
+            }
           }
         } catch (error) {
           console.error("Error checking wallet connection:", error);
@@ -55,12 +60,23 @@ export function WalletComponents() {
       }
     };
 
+    // Run once on mount
     checkWalletConnection();
 
-    const intervalId = setInterval(checkWalletConnection, 1000);
+    // Optional: Only run interval if no address found initially
+    const intervalId = setInterval(() => {
+      const address = localStorage.getItem(
+        "-walletlink:https://www.walletlink.org:Addresses"
+      );
+      if (!address) {
+        checkWalletConnection();
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [router]);
+  }, [router, pathname]); // Add pathname to dependencies
 
   if (loading) {
     return (
