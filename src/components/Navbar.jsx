@@ -119,10 +119,7 @@ const Navbar = () => {
         </div>
 
         <Wallet>
-          <ConnectWallet
-            className="bg-blue-800"
-            disconnectedLabel="Make Payment"
-          >
+          <ConnectWallet className="bg-blue-800" disconnectedLabel="Pay">
             <Avatar className="h-6 w-6" />
             <Name className="text-white" />
           </ConnectWallet>
