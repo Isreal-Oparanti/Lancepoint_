@@ -1,18 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useZkLogin } from "use-sui-zklogin";
 import { toast } from "react-hot-toast";
 
 const LiveGigs = () => {
-  const { accounts } = useZkLogin({
-    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
-    generateSalt: async () => {
-      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
-    },
-  });
+  const [wallet, setWallet] = useState(null);
 
-  const zksub = accounts?.[0]?.sub;
   const [liveGigs, setLiveGigs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredGigs, setFilteredGigs] = useState([]);
@@ -23,6 +16,14 @@ const LiveGigs = () => {
   const [proofLinks, setProofLinks] = useState([""]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== "undefined") {
+      const address = localStorage.getItem("shortWalletAddress");
+      setWallet(address);
+    }
+  }, []);
+
   const fetchLiveGig = async () => {
     try {
       const response = await fetch("/api/apply-gig");
@@ -31,7 +32,7 @@ const LiveGigs = () => {
       setLiveGigs(data);
 
       const filtered = data.filter(
-        (gig) => gig.status === "accepted" && gig.applicantId === zksub
+        (gig) => gig.status === "accepted" && gig.applicantId === wallet
       );
       setFilteredGigs(filtered);
     } catch (error) {
@@ -52,7 +53,7 @@ const LiveGigs = () => {
       formData.append("jobTitle", selectedGig.jobTitle);
       formData.append("jobDescription", selectedGig.jobDescription);
       formData.append("userId", selectedGig.userId);
-      formData.append("applicantId", zksub);
+      formData.append("applicantId", wallet);
       formData.append("startDate", selectedGig.startDate);
       formData.append("endDate", selectedGig.endDate);
       formData.append("paymentAmount", selectedGig.paymentAmount);
@@ -104,7 +105,7 @@ const LiveGigs = () => {
 
   useEffect(() => {
     fetchLiveGig();
-  }, [zksub]);
+  }, [wallet]);
 
   const handleViewMilestones = (gig) => {
     setSelectedGig(gig);

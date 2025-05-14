@@ -2,7 +2,8 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ZKLogin from "@/lib/ZKlogin";
+
+import { WalletComponents } from "../ConnectWallet";
 
 const Hero = () => {
   return (
@@ -18,6 +19,7 @@ const Hero = () => {
           and get rewarded fairly.
         </p>
         {/* <button className="p-3 bg-black text-white px-6 rounded-4xl">Sign Up  →</button>  */}
+        {/* <WalletComponents /> */}
       </div>
 
       <div className="w-full mt-8 md:w-5/12 flex justify-center">

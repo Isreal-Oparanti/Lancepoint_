@@ -1,22 +1,27 @@
 "use server";
 import { getCollection } from "@/lib/db";
 
-export async function registerWithZKLogin(zksub, walletAddress) {
+export async function registerWithBaseAuth(walletAddress) {
   const userCollection = await getCollection("users");
   if (!userCollection) {
     return { error: "Database connection failed" };
   }
 
   try {
+    const baseId = walletAddress
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .substring(0, 10)
+      .toLowerCase();
+
     const existingUser = await userCollection.findOne({
-      $or: [{ zksub }, { walletAddress }],
+      walletAddress: walletAddress,
     });
 
     if (!existingUser) {
       const insertResult = await userCollection.insertOne({
-        zksub,
+        baseId,
         walletAddress,
-        authMethod: "zklogin",
+        authMethod: "base",
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -25,12 +30,20 @@ export async function registerWithZKLogin(zksub, walletAddress) {
         return { error: "Failed to create user" };
       }
 
-      return { success: true, isNewUser: true };
+      return {
+        success: true,
+        isNewUser: true,
+        baseId,
+      };
     }
 
-    return { success: true, isNewUser: false };
+    return {
+      success: true,
+      isNewUser: false,
+      baseId: existingUser.baseId,
+    };
   } catch (error) {
-    console.error("ZK registration error:", error);
+    console.error("Base registration error:", error);
 
     if (error.code === 11000 || error.message.includes("duplicate key")) {
       return { success: true, isNewUser: false };

@@ -1,31 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useZkLogin } from "use-sui-zklogin";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import {
+  Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
+} from "@coinbase/onchainkit/identity";
 
-async function fetchSuiToUsdRate() {
+async function fetchBtcToUsdRate() {
   try {
     const response = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=sui&vs_currencies=usd"
+      "https://api.coinbase.com/v2/exchange-rates?currency=BTC"
     );
     const data = await response.json();
-    return data.sui?.usd || 0.5;
+    return data.data.rates?.USD ? parseFloat(data.data.rates.USD) : 0.5;
   } catch (error) {
-    console.error("Error fetching SUI price:", error);
+    console.error("Error fetching BTC price from Coinbase:", error);
     return 0.5;
   }
 }
 
 export default function NewGig() {
-  const { accounts } = useZkLogin({
-    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
-    generateSalt: async () => {
-      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
-    },
-  });
-  const zksub = accounts?.[0]?.sub;
+  const [wallet, setWallet] = useState(null);
+
+  console.log("Base:", wallet);
 
   const [formData, setFormData] = useState({
     services: [],
@@ -34,12 +36,12 @@ export default function NewGig() {
     startDate: "",
     endDate: "",
     payment: {
-      token: "SUI",
+      token: "BASE",
       amount: "",
       usdAmount: 0,
     },
     milestones: [],
-    userId: zksub || "",
+    userId: wallet || "",
   });
   const router = useRouter();
   const [suiRate, setSuiRate] = useState(0.5);
@@ -52,8 +54,24 @@ export default function NewGig() {
   });
 
   useEffect(() => {
-    fetchSuiToUsdRate().then((rate) => setSuiRate(rate));
+    fetchBtcToUsdRate().then((rate) => setSuiRate(rate));
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const address = localStorage.getItem("shortWalletAddress");
+      setWallet(address);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (wallet) {
+      setFormData((prev) => ({
+        ...prev,
+        userId: wallet,
+      }));
+    }
+  }, [wallet]);
 
   useEffect(() => {
     const amount = parseFloat(formData.payment.amount) || 0;
@@ -285,7 +303,7 @@ export default function NewGig() {
           </div>
           <div>
             <label className="font-medium text-[14px] block">
-              Amount (SUI)
+              Amount (BASE)
             </label>
             <input
               name="payment.amount"

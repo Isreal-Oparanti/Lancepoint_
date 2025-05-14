@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useZkLogin } from "use-sui-zklogin";
 import { toast } from "react-hot-toast";
 
 const Applications = () => {
@@ -11,15 +10,15 @@ const Applications = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [wallet, setWallet] = useState(null);
 
-  const { accounts } = useZkLogin({
-    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
-    generateSalt: async () => {
-      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
-    },
-  });
-
-  const zksub = accounts?.[0]?.sub;
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== "undefined") {
+      const address = localStorage.getItem("shortWalletAddress");
+      setWallet(address);
+    }
+  }, []);
 
   const fetchApplications = async () => {
     try {
@@ -27,7 +26,7 @@ const Applications = () => {
       const response = await fetch("/api/apply-gig");
       const data = await response.json();
 
-      const filteredApplications = data.filter((app) => app.userId === zksub);
+      const filteredApplications = data.filter((app) => app.userId === wallet);
 
       const grouped = filteredApplications.reduce((acc, app) => {
         if (!acc[app.jobTitle]) acc[app.jobTitle] = [];
@@ -60,11 +59,11 @@ const Applications = () => {
   };
 
   useEffect(() => {
-    if (zksub) {
+    if (wallet) {
       fetchSubmissions();
       fetchApplications();
     }
-  }, [zksub]);
+  }, [wallet]);
 
   const updateApplicationStatus = async (applicationId, status) => {
     try {
@@ -102,7 +101,7 @@ const Applications = () => {
   const getSubmissionsForJob = (jobTitle, jobDescription) => {
     return submissions.filter(
       (sub) =>
-        sub.userId === zksub &&
+        sub.userId === wallet &&
         sub.jobTitle === jobTitle &&
         sub.jobDescription === jobDescription
     );
