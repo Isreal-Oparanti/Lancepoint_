@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Avatar,
-  Identity,
-  Name,
-  Badge,
-  Address,
-} from "@coinbase/onchainkit/identity";
+
 import { WalletComponent } from "../ConnectWallet";
+import { useRouter } from "next/navigation";
+
+const WALLET_KEY = "-walletlink:https://www.walletlink.org:Addresses";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const walletData = localStorage.getItem(WALLET_KEY);
+    const isHomePage = router.pathname === "/";
+
+    if (walletData && isHomePage) {
+      router.replace("/dashboard");
+    }
+  }, [router]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,12 +38,13 @@ const Header = () => {
             height={32}
             className="h-6 w-6 sm:h-8 sm:w-8 "
           />
-          <span
+          <a
+            href="/"
             className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg"
             style={{ fontSize: "30px" }}
           >
             Lancepoint
-          </span>
+          </a>
         </div>
 
         <WalletComponent />

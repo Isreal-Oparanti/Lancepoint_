@@ -29,52 +29,46 @@ export function WalletComponent() {
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState(null);
 
   const checkWalletConnection = async () => {
     if (typeof window === "undefined") return;
 
     setLoading(true);
     try {
-      const walletLinkAddresses = localStorage.getItem(
+      let address = localStorage.getItem(
         "-walletlink:https://www.walletlink.org:Addresses"
       );
 
-      const ethereum = window.ethereum;
-      let address = walletLinkAddresses;
-
-      if (!address && ethereum) {
-        try {
-          const accounts = await ethereum.request({ method: "eth_accounts" });
-          if (accounts && accounts.length > 0) {
-            address = accounts[0];
-          }
-        } catch (error) {
-          console.error("Error getting accounts from provider:", error);
-        }
-      }
-
       if (address) {
-        const slicedAddress = address.slice(1, 11);
+        const cleanAddress = address.replace(/[\[\]"]/g, "");
+        const slicedAddress = cleanAddress.slice(0, 10);
+
+        setWalletAddress(cleanAddress);
         localStorage.setItem("shortWalletAddress", slicedAddress);
-        localStorage.setItem("fullAddress", JSON.stringify(address));
+        localStorage.setItem("fullAddress", cleanAddress);
         setIsConnected(true);
 
-        console.log("Connected wallet address:", address);
-        console.log("Shortened address stored:", slicedAddress);
+        const registrationResult = await registerWithBaseAuth(cleanAddress);
 
-        const registrationResult = await registerWithBaseAuth(address);
         if (registrationResult?.error) {
           console.error("Registration error:", registrationResult.error);
         }
 
-        if (pathname === "/") {
+        if (
+          pathname === "/" &&
+          registrationResult?.success &&
+          !registrationResult?.isNewUser
+        ) {
           router.push("/dashboard");
         }
       } else {
+        setWalletAddress(null);
         setIsConnected(false);
       }
     } catch (error) {
       console.error("Error checking wallet connection:", error);
+      setWalletAddress(null);
       setIsConnected(false);
     } finally {
       setLoading(false);
@@ -82,14 +76,13 @@ export function WalletComponent() {
   };
 
   useEffect(() => {
-    // Initial check
     checkWalletConnection();
 
-    // Set up event listeners
     const handleAccountsChanged = (accounts) => {
       if (accounts.length > 0) {
         checkWalletConnection();
       } else {
+        setWalletAddress(null);
         setIsConnected(false);
         localStorage.removeItem("shortWalletAddress");
         localStorage.removeItem("fullAddress");
@@ -127,39 +120,27 @@ export function WalletComponent() {
   return (
     <div className="flex justify-end items-center gap-4">
       {isConnected && (
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-gray-700 hover:text-gray-900 p-3 bg-white rounded-md"
-        >
-          Dashboard
-        </Link>
+        <>
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-gray-700 hover:text-gray-900 p-3 bg-white rounded-md"
+          >
+            Dashboard
+          </Link>
+          <span className="text-sm text-gray-600">
+            {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}
+          </span>
+        </>
       )}
-
       <Wallet>
         {!isConnected && (
-          <ConnectWallet>
-            {loading && (
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            )}
+          <ConnectWallet
+            className="bg-blue-800 text-white p-2 rounded-md"
+            disconnectedLabel="Connect Wallet"
+            onClick={() =>
+              window.open("https://wallet.coinbase.com/", "_blank")
+            }
+          >
             <Avatar className="h-6 w-6" />
             <Name />
           </ConnectWallet>
@@ -178,8 +159,18 @@ export function WalletComponent() {
                 className="w-full"
                 icon="wallet"
                 href="https://keys.coinbase.com"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Wallet
+              </WalletDropdownLink>
+              <WalletDropdownLink
+                className="w-full"
+                icon="dashboard"
+                href="/dashboard"
+                rel="noopener noreferrer"
+              >
+                Dashboard
               </WalletDropdownLink>
               <WalletDropdownFundLink className="w-full" />
               <WalletDropdownDisconnect className="w-full" />

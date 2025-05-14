@@ -36,7 +36,7 @@ export default function NewGig() {
     startDate: "",
     endDate: "",
     payment: {
-      token: "BASE",
+      token: "ETH",
       amount: "",
       usdAmount: 0,
     },
@@ -58,9 +58,16 @@ export default function NewGig() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const address = localStorage.getItem("shortWalletAddress");
+    const address = localStorage.getItem("shortWalletAddress");
+
+    if (address) {
       setWallet(address);
+    } else {
+      const randomId = [...Array(10)]
+        .map(() => Math.random().toString(36)[2])
+        .join("");
+      setWallet(randomId);
+      localStorage.setItem("shortWalletAddress", randomId);
     }
   }, []);
 
@@ -138,11 +145,11 @@ export default function NewGig() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // if (!formData.userId) {
-    //   toast.error("Please connect your wallet to create a gig");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
+    if (!formData.userId) {
+      toast.error("Please connect your wallet to create a gig");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch("/api/new-gig", {

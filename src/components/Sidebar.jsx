@@ -106,14 +106,17 @@ export default function Sidebar() {
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-            <span className="flex items-center justify-center ml-1 text-2xl font-bold">
+            <a
+              href="/"
+              className="flex items-center justify-center ml-1 text-2xl font-bold"
+            >
               <img
                 src="/Lance@3x3.png"
                 alt="Logo"
                 className="w-7 h-7 app-font mr-2"
               />{" "}
               Lancepoint
-            </span>
+            </a>
           </div>
         )}
       </button>
@@ -173,14 +176,14 @@ export default function Sidebar() {
           }`}
         >
           {(!isCollapsed || isMobile) && (
-            <span className="flex items-center ml-9">
+            <a href="/" className="flex items-center ml-9">
               <img
                 src="/Lance@3x3.png"
                 alt="Logo"
                 className="w-6 h-6 app-font mr-2"
               />{" "}
               Lancepoint
-            </span>
+            </a>
           )}
         </div>
         <ul className="space-y-4 flex flex-col p-1">
