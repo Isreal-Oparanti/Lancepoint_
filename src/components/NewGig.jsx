@@ -14,12 +14,12 @@ import {
 async function fetchBtcToUsdRate() {
   try {
     const response = await fetch(
-      "https://api.coinbase.com/v2/exchange-rates?currency=BTC"
+      "https://api.coinbase.com/v2/exchange-rates?currency=ETH"
     );
     const data = await response.json();
     return data.data.rates?.USD ? parseFloat(data.data.rates.USD) : 0.5;
   } catch (error) {
-    console.error("Error fetching BTC price from Coinbase:", error);
+    console.error("Error fetching ETH price from Coinbase:", error);
     return 0.5;
   }
 }
@@ -138,11 +138,11 @@ export default function NewGig() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!formData.userId) {
-      toast.error("Please connect your wallet to create a gig");
-      setIsSubmitting(false);
-      return;
-    }
+    // if (!formData.userId) {
+    //   toast.error("Please connect your wallet to create a gig");
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     try {
       const response = await fetch("/api/new-gig", {
@@ -303,7 +303,7 @@ export default function NewGig() {
           </div>
           <div>
             <label className="font-medium text-[14px] block">
-              Amount (BASE)
+              Amount (ETH)
             </label>
             <input
               name="payment.amount"
