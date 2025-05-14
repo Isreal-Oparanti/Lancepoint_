@@ -3,22 +3,8 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {
-  ConnectWallet,
-  Wallet,
-  WalletDropdown,
-  WalletDropdownBasename,
-  WalletDropdownFundLink,
-  WalletDropdownLink,
-  WalletDropdownDisconnect,
-} from "@coinbase/onchainkit/wallet";
-import {
-  Address,
-  Avatar,
-  Name,
-  Identity,
-  EthBalance,
-} from "@coinbase/onchainkit/identity";
+import { WalletAdvancedDefault } from "@coinbase/onchainkit/wallet";
+import { WalletIsland } from "@coinbase/onchainkit/wallet";
 
 const shortenAddress = (address) => {
   return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
@@ -118,34 +104,8 @@ const Navbar = () => {
           )}
         </div>
 
-        <Wallet>
-          <ConnectWallet className="bg-blue-800" disconnectedLabel="Pay">
-            <Avatar className="h-6 w-6" />
-            <Name className="text-white" />
-          </ConnectWallet>
-          <WalletDropdown>
-            <Identity
-              className="px-4 pt-3 pb-2 hover:bg-blue-200"
-              hasCopyAddressOnClick
-            >
-              <Avatar />
-              <Name />
-              <Address />
-              <EthBalance />
-            </Identity>
-            <WalletDropdownLink
-              className="hover:bg-blue-200"
-              icon="wallet"
-              href="https://keys.coinbase.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Wallet
-            </WalletDropdownLink>
-
-            <WalletDropdownDisconnect className="hover:bg-blue-200" />
-          </WalletDropdown>
-        </Wallet>
+        <WalletAdvancedDefault />
+        <WalletIsland />
       </div>
     </header>
   );
