@@ -3,7 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { WalletComponents } from "../ConnectWallet";
+import {
+  Avatar,
+  Identity,
+  Name,
+  Badge,
+  Address,
+} from "@coinbase/onchainkit/identity";
+import { WalletComponent } from "../ConnectWallet";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,16 +20,16 @@ const Header = () => {
   };
 
   return (
-    <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20">
+    <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20 ">
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center">
+        <div className="flex items-center text-white">
           <Image
             src="/icons/logo.svg"
             alt="Lancepoint Logo"
             width={32}
             height={32}
-            className="h-6 w-6 sm:h-8 sm:w-8"
+            className="h-6 w-6 sm:h-8 sm:w-8 "
           />
           <span
             className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg"
@@ -31,7 +38,9 @@ const Header = () => {
             Lancepoint
           </span>
         </div>
-        <WalletComponents />
+
+        <WalletComponent />
+        {/* <WalletComponents /> */}
         {/* Desktop Navigation */}
         {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
           <Link
@@ -105,7 +114,7 @@ const Header = () => {
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
             {/* <ZKLogin /> */}
-            <WalletComponents />
+            <WalletComponent />
 
             {/* <Link
               href="/"

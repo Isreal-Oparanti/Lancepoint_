@@ -58,12 +58,20 @@ export default function NewGig() {
   }, []);
 
   useEffect(() => {
-    // Only access localStorage on the client side
     if (typeof window !== "undefined") {
       const address = localStorage.getItem("shortWalletAddress");
       setWallet(address);
     }
   }, []);
+
+  useEffect(() => {
+    if (wallet) {
+      setFormData((prev) => ({
+        ...prev,
+        userId: wallet,
+      }));
+    }
+  }, [wallet]);
 
   useEffect(() => {
     const amount = parseFloat(formData.payment.amount) || 0;
