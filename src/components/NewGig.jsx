@@ -11,7 +11,7 @@ import {
   EthBalance,
 } from "@coinbase/onchainkit/identity";
 
-async function fetchBtcToUsdRate() {
+async function fetchEthToUsdRate() {
   try {
     const response = await fetch(
       "https://api.coinbase.com/v2/exchange-rates?currency=ETH"
@@ -44,7 +44,8 @@ export default function NewGig() {
     userId: wallet || "",
   });
   const router = useRouter();
-  const [suiRate, setSuiRate] = useState(0.5);
+  const [ethRate, setEthRate] = useState(0.5);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentService, setCurrentService] = useState("");
   const [currentMilestone, setCurrentMilestone] = useState({
@@ -54,7 +55,7 @@ export default function NewGig() {
   });
 
   useEffect(() => {
-    fetchBtcToUsdRate().then((rate) => setSuiRate(rate));
+    fetchEthToUsdRate().then((rate) => setEthRate(rate));
   }, []);
 
   useEffect(() => {
@@ -86,10 +87,10 @@ export default function NewGig() {
       ...prev,
       payment: {
         ...prev.payment,
-        usdAmount: parseFloat((amount * suiRate).toFixed(2)),
+        usdAmount: parseFloat((amount * ethRate).toFixed(6)),
       },
     }));
-  }, [formData.payment.amount, suiRate]);
+  }, [formData.payment.amount, ethRate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

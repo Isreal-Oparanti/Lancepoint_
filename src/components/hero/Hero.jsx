@@ -1,16 +1,11 @@
-"use client";
-import { useEffect, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-
-import { WalletComponents } from "../ConnectWallet";
-
 const Hero = () => {
   return (
     <div className="relative flex flex-col md:flex-row items-center md:items-start md:justify-between gap-y-8 md:gap-y-0 md:gap-x-8 py-12 px-4 md:px-16 min-h-[500px] ">
-      <div className="w-full md:w-7/12">
+      <div className="w-full md:w-7/12 text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold leading-snug mb-6">
-          Web3 Enhanced Environment Where talents meets Opportunities
+          Web3 Enhanced Environment
+          <br></br>
+          Where talents meets Opportunities
         </h1>
         <p className="text-xl text-gray-700  mb-6">
           Connect with top-tier Web3 professionals and forward-thinking
@@ -18,8 +13,6 @@ const Hero = () => {
           and visionaries to collaborate seamlessly, build real-world solutions,
           and get rewarded fairly.
         </p>
-        {/* <button className="p-3 bg-black text-white px-6 rounded-4xl">Sign Up  →</button>  */}
-        {/* <WalletComponents /> */}
       </div>
 
       <div className="w-full mt-8 md:w-5/12 flex justify-center">
