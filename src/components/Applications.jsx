@@ -11,14 +11,82 @@ const Applications = () => {
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [wallet, setWallet] = useState(null);
+  const [aiMessages, setAiMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [isAiThinking, setIsAiThinking] = useState(false);
+
+  // Extract latest assistant message
+  const latestAIResponse = aiMessages
+    .filter((msg) => msg.role === "assistant")
+    .slice(-1)[0]?.content;
 
   useEffect(() => {
-    // Only access localStorage on the client side
     if (typeof window !== "undefined") {
       const address = localStorage.getItem("shortWalletAddress");
       setWallet(address);
     }
   }, []);
+
+  const handleAIReview = async (prompt) => {
+    try {
+      setIsAiThinking(true);
+      const userMessage = {
+        role: "user",
+        content: `Please review the following submission:\n\n${prompt}`,
+      };
+      setAiMessages((prev) => [...prev, userMessage]);
+      setInput("");
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...aiMessages, userMessage],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+      const aiMessage = { role: "assistant", content: data.text };
+      setAiMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("AI review error:", error);
+      toast.error("AI failed to review");
+    } finally {
+      setIsAiThinking(false);
+    }
+  };
+
+  const generateSubmissionPrompt = (submissions) => {
+    if (!submissions || submissions.length === 0)
+      return "No submissions available.";
+
+    return submissions
+      .map((submission, submissionIdx) => {
+        return submission.submissions
+          .map((milestone, idx) => {
+            const proofList = milestone.proofLinks
+              .map((link, i) => `- [Proof ${i + 1}](${link})`)
+              .join("\n");
+
+            return `Milestone ${idx + 1}:
+Description: ${milestone.submissionDescription}
+Proofs:
+${proofList}`;
+          })
+          .join("\n\n");
+      })
+      .join("\n\n");
+  };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
 
   const fetchApplications = async () => {
     try {
@@ -264,6 +332,63 @@ const Applications = () => {
                             </div>
                           ))
                         )}
+
+                        <div className="mt-6 pt-4 border-t">
+                          <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                            AI Submission Review
+                          </h3>
+
+                          <div className="flex flex-col md:flex-row gap-3 mb-6">
+                            <input
+                              value={input}
+                              placeholder="Ask something about the submission..."
+                              onChange={handleInputChange}
+                              className="border border-gray-300 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-black"
+                            />
+
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  const submissionPrompt =
+                                    generateSubmissionPrompt(jobSubmissions);
+                                  handleAIReview(submissionPrompt);
+                                }}
+                                className="bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-900 transition"
+                              >
+                                Review Submission with AI
+                              </button>
+
+                              <button
+                                onClick={handleAIReview}
+                                disabled={!input.trim() || isAiThinking}
+                                className="bg-white border border-black text-black px-4 py-2 rounded-xl hover:bg-black hover:text-white transition disabled:opacity-50"
+                              >
+                                {isAiThinking ? "Thinking..." : "Send"}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Chat History */}
+                          {aiMessages.length > 0 && (
+                            <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200 max-h-[300px] overflow-y-auto">
+                              {aiMessages.map((message, index) => (
+                                <div
+                                  key={index}
+                                  className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${
+                                    message.role === "user"
+                                      ? "bg-black text-white ml-auto"
+                                      : "bg-white border border-gray-300 text-gray-800"
+                                  }`}
+                                >
+                                  <strong>
+                                    {message.role === "user" ? "You" : "AI"}:
+                                  </strong>{" "}
+                                  {message.content}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
 
                         {/* Close Button */}
                         <div className="flex justify-end space-x-2 mt-4">
