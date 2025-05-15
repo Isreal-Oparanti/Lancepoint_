@@ -29,6 +29,15 @@ const Applications = () => {
 
   const handleAIReview = async (prompt) => {
     try {
+      const fullAddress = localStorage.getItem("fullAddress");
+
+      if (!fullAddress) {
+        toast.error(
+          "Wallet address not found. Please connect your wallet first"
+        );
+        return;
+      }
+
       setIsAiThinking(true);
       const userMessage = {
         role: "user",
@@ -44,24 +53,30 @@ const Applications = () => {
         },
         body: JSON.stringify({
           messages: [...aiMessages, userMessage],
+          walletAddress: fullAddress,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get AI response");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to get AI response");
       }
 
       const data = await response.json();
       const aiMessage = { role: "assistant", content: data.text };
       setAiMessages((prev) => [...prev, aiMessage]);
+
+      // Handle any on-chain actions returned from the AI
+      if (data.toolResults && data.toolResults.length > 0) {
+        await handleOnChainActions(data.toolResults, fullAddress);
+      }
     } catch (error) {
       console.error("AI review error:", error);
-      toast.error("AI failed to review");
+      toast.error(error.message || "AI failed to review");
     } finally {
       setIsAiThinking(false);
     }
   };
-
   const generateSubmissionPrompt = (submissions) => {
     if (!submissions || submissions.length === 0)
       return "No submissions available.";
