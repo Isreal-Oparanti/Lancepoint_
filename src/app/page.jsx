@@ -3,7 +3,7 @@ import Partners from "@/components/partners/Partners";
 import About from "@/components/about/About";
 import TrustlessAgreements from "@/components/trustlessAgreements/TrustlessAgreements";
 import Services from "@/components/services/Services";
-import Waitlist from "@/components/waitlist/Waitlist";
+
 import Header from "@/components/Navbar/Header";
 import Footer from "@/components/footer/Footer";
 import ZK from "@/components/ZK";
@@ -19,7 +19,6 @@ function App() {
         <About />
         <TrustlessAgreements />
         <Services />
-        <Waitlist />
       </main>
       <Footer />
       {/* <ZK /> */}

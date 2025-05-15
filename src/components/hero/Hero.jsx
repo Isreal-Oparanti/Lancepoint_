@@ -1,7 +1,7 @@
 const Hero = () => {
   return (
     <div className="relative flex flex-col md:flex-row items-center md:items-start md:justify-between gap-y-8 md:gap-y-0 md:gap-x-8 py-12 px-4 md:px-16 min-h-[500px] ">
-      <div className="w-full md:w-7/12 text-center">
+      <div className="w-full md:w-7/12 text-center mt-[3rem]">
         <h1 className="text-5xl md:text-6xl font-extrabold leading-snug mb-6">
           Web3 Enhanced Environment
           <br></br>
