@@ -1,17 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-
 import { WalletComponent } from "../ConnectWallet";
 import { useRouter } from "next/navigation";
 
 const WALLET_KEY = "-walletlink:https://www.walletlink.org:Addresses";
 
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${breakpoint}px)`);
+
+    const handleChange = (e) => {
+      setIsMobile(e.matches);
+    };
+
+    setIsMobile(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [breakpoint]);
+
+  return isMobile;
+};
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const walletData = localStorage.getItem(WALLET_KEY);
@@ -27,56 +46,27 @@ const Header = () => {
   };
 
   return (
-    <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20 ">
+    <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20">
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center text-white">
+        <div className="flex items-center">
           <Image
             src="/icons/logo.svg"
             alt="Lancepoint Logo"
             width={32}
             height={32}
-            className="h-6 w-6 sm:h-8 sm:w-8 "
+            className="h-6 w-6 sm:h-8 sm:w-8"
           />
           <a
             href="/"
-            className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg"
+            className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg text-black"
             style={{ fontSize: "30px" }}
           >
             Lancepoint
           </a>
         </div>
 
-        <WalletComponent />
-        {/* <WalletComponents /> */}
-        {/* Desktop Navigation */}
-        {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
-          <Link
-            href="/"
-            className="header-nav-color  font-semibold lg:text-base"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/jobs"
-            className="header-nav-color  font-semibold lg:text-base"
-          >
-            Jobs
-          </Link>
-          <Link
-            href="/payments"
-            className="header-nav-color   font-semibold lg:text-base"
-          >
-            Contact
-          </Link>
-        </nav> */}
-
-        {/* Sign Up Button */}
-        <div className="hidden md:block">
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-between">
-            {/* <ZKLogin /> */}
-          </div>
-        </div>
+        {!isMobile && <WalletComponent />}
 
         <div className="md:hidden ml-auto">
           <button
@@ -118,39 +108,11 @@ const Header = () => {
         </div>
       </div>
 
-      {isMenuOpen && (
+      {isMenuOpen && isMobile && (
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
-            {/* <ZKLogin /> */}
             <WalletComponent />
-
-            {/* <Link
-              href="/"
-              className="text-black hover:text-gray-600 text-[16px] font-semibold"
-            >
-              Home
-            </Link>
-            <Link
-              href="/jobs"
-              className="text-black hover:text-gray-600 text-[16px] font-semibold"
-            >
-              Jobs
-            </Link>
-            <Link
-              href="/payments"
-              className="text-black hover:text-gray-600 text-[16px] font-semibold"
-            >
-              Payments
-            </Link> */}
           </nav>
-          {/* <div className="mt-4">
-            <Link
-              href="/signup"
-              className="inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-gray-800 transition duration-300"
-            >
-              Sign up
-            </Link>
-          </div> */}
         </div>
       )}
     </header>

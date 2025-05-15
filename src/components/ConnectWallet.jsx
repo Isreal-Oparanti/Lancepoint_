@@ -166,7 +166,7 @@ export function WalletComponent() {
               </WalletDropdownLink>
               <WalletDropdownLink
                 className="w-full"
-                icon="dashboard"
+                icon="wallet"
                 href="/dashboard"
                 rel="noopener noreferrer"
               >
