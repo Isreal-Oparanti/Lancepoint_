@@ -15,6 +15,7 @@ export default function Sidebar() {
     { href: "/browse-gigs", label: "Browse Gigs", icon: "/4.png" },
     { href: "/live-gigs", label: "Live Gigs", icon: "/2.png" },
     { href: "/applications", label: "Applications", icon: "/1.png" },
+    { href: "/chat", label: "Chats", icon: "/1.png" },
     {
       href: "/create-new-gig",
       label: "Create Gigs",
