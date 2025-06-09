@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Client, type Signer, type Identifier } from "@xmtp/browser-sdk";
 import { ethers } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
@@ -117,6 +117,7 @@ const XMTPMessenger = () => {
       return;
     }
 
+    // Ensure proper address formatting
     let formattedAddress;
     try {
       formattedAddress = ethers.getAddress(peerAddress.toLowerCase());
@@ -130,6 +131,7 @@ const XMTPMessenger = () => {
     try {
       setIsLoading(true);
 
+      // Check for existing conversation first
       const existingConv = conversations.find(
         (c) => ethers.getAddress(c.peerAddress) === formattedAddress
       );
@@ -141,6 +143,7 @@ const XMTPMessenger = () => {
         return;
       }
 
+      // Create a new DM conversation
       const conversation = await client.conversations.newDm(formattedAddress);
 
       setActiveConversation(formattedAddress);
@@ -169,25 +172,27 @@ const XMTPMessenger = () => {
     }
   };
 
-  const loadMessages = async (conversation: any) => {
-    if (!conversation) return;
+  const loadMessages = useCallback(
+    async (conversation: any) => {
+      if (!conversation || !client) return;
 
-    try {
-      const messages = await conversation.messages();
-      setMessages(
-        messages.map((msg: any) => ({
-          content: msg.content,
-          sender: msg.senderAddress,
-        }))
-      );
-      toast.success("Messages loaded");
-    } catch (err) {
-      console.error("Error loading messages:", err);
-      toast.error("Failed to load messages");
-      setError("Failed to load messages");
-    }
-  };
-
+      try {
+        const messages = await client.conversations.list();
+        setMessages(
+          messages.map((msg: any) => ({
+            content: msg.content,
+            sender: msg.senderAddress,
+          }))
+        );
+        toast.success("Messages loaded");
+      } catch (err) {
+        console.error("Error loading messages:", err);
+        toast.error("Failed to load messages");
+        setError("Failed to load messages");
+      }
+    },
+    [client]
+  ); // Add all dependencies used inside the callback
   const sendMessage = async () => {
     if (!client || !activeConversation || !newMessage.trim()) return;
 
@@ -219,8 +224,7 @@ const XMTPMessenger = () => {
         loadMessages(conversation);
       }
     }
-  }, [activeConversation, client, conversations]);
-
+  }, [activeConversation, client, conversations, loadMessages]);
   return (
     <div className="max-w-4xl mx-auto p-6 bg-black rounded-lg shadow-md">
       <Toaster
@@ -369,8 +373,8 @@ const XMTPMessenger = () => {
                   Your Conversations
                 </h3>
                 <ul className="space-y-2">
-                  {conversations.map((conversation) => (
-                    <li key={conversation.peerAddress}>
+                  {conversations.map((conversation, index) => (
+                    <li key={conversation.peerAddress || index}>
                       <button
                         onClick={() => {
                           setActiveConversation(conversation.peerAddress);
