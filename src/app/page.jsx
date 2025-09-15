@@ -3,10 +3,8 @@ import Partners from "@/components/partners/Partners";
 import About from "@/components/about/About";
 import TrustlessAgreements from "@/components/trustlessAgreements/TrustlessAgreements";
 import Services from "@/components/services/Services";
-
 import Header from "@/components/Navbar/Header";
 import Footer from "@/components/footer/Footer";
-import ZK from "@/components/ZK";
 import "./globals.css";
 
 function App() {

@@ -1,0 +1,154 @@
+{
+  "version": "0.1.0",
+  "name": "lp_program",
+  "instructions": [
+    {
+      "name": "apply_to_job",
+      "accounts": [
+        { "name": "application", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "user_account", "isMut": false, "isSigner": false },
+        { "name": "job_post", "isMut": false, "isSigner": false },
+        { "name": "system_program", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "resume_link", "type": "string" }]
+    },
+    {
+      "name": "approve_application",
+      "accounts": [
+        { "name": "application", "isMut": true, "isSigner": false },
+        { "name": "job_post", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "user_account", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "approve_submission",
+      "accounts": [
+        { "name": "application", "isMut": true, "isSigner": false },
+        { "name": "job_post", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "user_account", "isMut": false, "isSigner": false },
+        { "name": "freelancer", "isMut": true, "isSigner": false },
+        { "name": "system_program", "isMut": false, "isSigner": false }
+      ],
+      "args": [{ "name": "client_review", "type": "string" }]
+    },
+    {
+      "name": "initialize_job_post",
+      "accounts": [
+        { "name": "job_post", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "user_account", "isMut": false, "isSigner": false },
+        { "name": "system_program", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "title", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "amount", "type": "u64" }
+      ]
+    },
+    {
+      "name": "register_user",
+      "accounts": [
+        { "name": "user_account", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "system_program", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "name", "type": "string" },
+        { "name": "role", "type": "UserRole" }
+      ]
+    },
+    {
+      "name": "submit_work",
+      "accounts": [
+        { "name": "application", "isMut": true, "isSigner": false },
+        { "name": "signer", "isMut": true, "isSigner": true },
+        { "name": "user_account", "isMut": false, "isSigner": false },
+        { "name": "job_post", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "submission_link", "type": "string" },
+        { "name": "narration", "type": "string" }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Application",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "applicant", "type": "publicKey" },
+          { "name": "job_post", "type": "publicKey" },
+          { "name": "resume_link", "type": "string" },
+          { "name": "approved", "type": "bool" },
+          { "name": "completed", "type": "bool" },
+          { "name": "submission_link", "type": "string" },
+          { "name": "narration", "type": "string" },
+          { "name": "client_review", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "JobPost",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "client", "type": "publicKey" },
+          { "name": "title", "type": "string" },
+          { "name": "amount", "type": "u64" },
+          { "name": "description", "type": "string" },
+          { "name": "is_filled", "type": "bool" },
+          { "name": "escrow_bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "UserAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "wallet", "type": "publicKey" },
+          { "name": "name", "type": "string" },
+          { "name": "role", "type": "UserRole" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "UserRole",
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Client" }, { "name": "Freelancer" }]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "JobAlreadyFilled",
+      "msg": "This job has already been filled"
+    },
+    {
+      "code": 6002,
+      "name": "ApplicationNotApproved",
+      "msg": "Application has not been approved yet"
+    },
+    {
+      "code": 6003,
+      "name": "WorkNotCompleted",
+      "msg": "Work has not been completed yet"
+    }
+  ]
+}
