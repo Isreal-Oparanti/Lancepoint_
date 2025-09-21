@@ -5,9 +5,8 @@ import { useMemo } from "react";
 import { PublicKey } from "@solana/web3.js";
 import IDL from "./IDL.json";
 
-// your program id (from deployment)
 export const PROGRAM_ID = new PublicKey(
-  "7XsphaTcfqrwkRmm7htDsko8tyqdnzmCLrycqpDFvVLe"
+  "AvTfTNzZfqg666MTy6N4MaeMwdZxa8rBGgdsgkdGoXPK"
 );
 
 export const useAnchorProgram = () => {
@@ -16,11 +15,9 @@ export const useAnchorProgram = () => {
 
   const provider = useMemo(() => {
     if (!wallet || !wallet.publicKey) return null;
-    return new AnchorProvider(
-      connection,
-      wallet, // wallet already has signTransaction/sendTransaction
-      { preflightCommitment: "processed" }
-    );
+    return new AnchorProvider(connection, wallet, {
+      preflightCommitment: "processed",
+    });
   }, [connection, wallet]);
 
   const program = useMemo(() => {

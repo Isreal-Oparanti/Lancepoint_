@@ -14,7 +14,7 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useRouter } from "next/navigation"; // ✅ for redirect
+import { useRouter } from "next/navigation";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 const WalletBalance = () => {
@@ -50,7 +50,7 @@ const WalletRedirect = () => {
 
   useEffect(() => {
     if (publicKey) {
-      router.push("/dashboard"); // ✅ redirect once wallet connects
+      router.push("/dashboard");
     }
   }, [publicKey, router]);
 

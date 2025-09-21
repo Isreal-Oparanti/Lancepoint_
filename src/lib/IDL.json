@@ -3,77 +3,234 @@
   "name": "lp_program",
   "instructions": [
     {
-      "name": "apply_to_job",
+      "name": "applyToJob",
       "accounts": [
-        { "name": "application", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "user_account", "isMut": false, "isSigner": false },
-        { "name": "job_post", "isMut": false, "isSigner": false },
-        { "name": "system_program", "isMut": false, "isSigner": false }
+        {
+          "name": "application",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "jobPost",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
-      "args": [{ "name": "resume_link", "type": "string" }]
+      "args": [
+        {
+          "name": "resumeLink",
+          "type": "string"
+        },
+        {
+          "name": "expectedEndDate",
+          "type": "i64"
+        }
+      ]
     },
     {
-      "name": "approve_application",
+      "name": "approveApplication",
       "accounts": [
-        { "name": "application", "isMut": true, "isSigner": false },
-        { "name": "job_post", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "user_account", "isMut": false, "isSigner": false }
+        {
+          "name": "application",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "jobPost",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAccount",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
       "args": []
     },
     {
-      "name": "approve_submission",
+      "name": "approveSubmission",
       "accounts": [
-        { "name": "application", "isMut": true, "isSigner": false },
-        { "name": "job_post", "isMut": true, "isSigner": false },
-        { "name": "escrow", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "user_account", "isMut": false, "isSigner": false },
-        { "name": "freelancer", "isMut": true, "isSigner": false },
-        { "name": "system_program", "isMut": false, "isSigner": false }
-      ],
-      "args": [{ "name": "client_review", "type": "string" }]
-    },
-    {
-      "name": "initialize_job_post",
-      "accounts": [
-        { "name": "job_post", "isMut": true, "isSigner": false },
-        { "name": "escrow", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "user_account", "isMut": false, "isSigner": false },
-        { "name": "system_program", "isMut": false, "isSigner": false }
+        {
+          "name": "application",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "jobPost",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "escrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "freelancer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
       "args": [
-        { "name": "title", "type": "string" },
-        { "name": "description", "type": "string" },
-        { "name": "amount", "type": "u64" }
+        {
+          "name": "clientReview",
+          "type": "string"
+        }
       ]
     },
     {
-      "name": "register_user",
+      "name": "initializeJobPost",
       "accounts": [
-        { "name": "user_account", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "system_program", "isMut": false, "isSigner": false }
+        {
+          "name": "jobPost",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "escrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
       "args": [
-        { "name": "name", "type": "string" },
-        { "name": "role", "type": "UserRole" }
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "startDate",
+          "type": "i64"
+        },
+        {
+          "name": "endDate",
+          "type": "i64"
+        }
       ]
     },
     {
-      "name": "submit_work",
+      "name": "registerUser",
       "accounts": [
-        { "name": "application", "isMut": true, "isSigner": false },
-        { "name": "signer", "isMut": true, "isSigner": true },
-        { "name": "user_account", "isMut": false, "isSigner": false },
-        { "name": "job_post", "isMut": false, "isSigner": false }
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
       "args": [
-        { "name": "submission_link", "type": "string" },
-        { "name": "narration", "type": "string" }
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "role",
+          "type": {
+            "defined": "UserRole"
+          }
+        }
+      ]
+    },
+    {
+      "name": "submitWork",
+      "accounts": [
+        {
+          "name": "application",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "jobPost",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "submissionLink",
+          "type": "string"
+        },
+        {
+          "name": "narration",
+          "type": "string"
+        }
       ]
     }
   ],
@@ -83,14 +240,42 @@
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "applicant", "type": "publicKey" },
-          { "name": "job_post", "type": "publicKey" },
-          { "name": "resume_link", "type": "string" },
-          { "name": "approved", "type": "bool" },
-          { "name": "completed", "type": "bool" },
-          { "name": "submission_link", "type": "string" },
-          { "name": "narration", "type": "string" },
-          { "name": "client_review", "type": "string" }
+          {
+            "name": "applicant",
+            "type": "pubkey"
+          },
+          {
+            "name": "jobPost",
+            "type": "pubkey"
+          },
+          {
+            "name": "resumeLink",
+            "type": "string"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "completed",
+            "type": "bool"
+          },
+          {
+            "name": "submissionLink",
+            "type": "string"
+          },
+          {
+            "name": "narration",
+            "type": "string"
+          },
+          {
+            "name": "clientReview",
+            "type": "string"
+          },
+          {
+            "name": "expectedEndDate",
+            "type": "i64"
+          }
         ]
       }
     },
@@ -99,12 +284,38 @@
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "client", "type": "publicKey" },
-          { "name": "title", "type": "string" },
-          { "name": "amount", "type": "u64" },
-          { "name": "description", "type": "string" },
-          { "name": "is_filled", "type": "bool" },
-          { "name": "escrow_bump", "type": "u8" }
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "isFilled",
+            "type": "bool"
+          },
+          {
+            "name": "escrowBump",
+            "type": "u8"
+          },
+          {
+            "name": "startDate",
+            "type": "i64"
+          },
+          {
+            "name": "endDate",
+            "type": "i64"
+          }
         ]
       }
     },
@@ -113,9 +324,20 @@
       "type": {
         "kind": "struct",
         "fields": [
-          { "name": "wallet", "type": "publicKey" },
-          { "name": "name", "type": "string" },
-          { "name": "role", "type": "UserRole" }
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": "UserRole"
+            }
+          }
         ]
       }
     }
@@ -125,7 +347,14 @@
       "name": "UserRole",
       "type": {
         "kind": "enum",
-        "variants": [{ "name": "Client" }, { "name": "Freelancer" }]
+        "variants": [
+          {
+            "name": "Client"
+          },
+          {
+            "name": "Freelancer"
+          }
+        ]
       }
     }
   ],
@@ -149,6 +378,11 @@
       "code": 6003,
       "name": "WorkNotCompleted",
       "msg": "Work has not been completed yet"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidDates",
+      "msg": "Invalid dates provided"
     }
   ]
 }
