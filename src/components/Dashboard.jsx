@@ -162,55 +162,51 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
-      <div className="flex justify-center mt-20 mb-10 px-4">
-        <div className="space-y-10 max-w-[90%] w-full ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
-              <span className="text-[14px] font-[400]">Monthly Revenue</span>
-              <div className="mt-3 flex justify-between items-center">
-                <span className="text-[30px] font-[500]">
-                  {monthlyRevenue.toLocaleString()}
-                  <span className="text-[14px] ml-1">{paymentToken}</span>
-                </span>
-                <span className="text-[14px] font-[400] flex items-center gap-2">
-                  <span>-0.03%</span>
-                  <img src="Vector(3).png" alt="change-icon" />
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
-              <span className="text-[14px] font-[400]">Monthly Gigs</span>
-              <div className="mt-3 flex justify-between items-center">
-                <span className="text-[30px] font-[500]">{monthlyGigs}</span>
-                <span className="text-[14px] font-[400] flex items-center gap-2">
-                  <span>10%</span>
-                  <img src="Vector(3).png" alt="change-icon" />
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
-              <span className="text-[14px] font-[400]">Total Gigs</span>
-              <div className="mt-3 flex justify-between items-center">
-                <span className="text-[30px] font-[500]">{totalGigs}</span>
-                <span className="text-[14px] font-[400] flex items-center gap-2">
-                  <span>10%</span>
-                  <img src="Vector(3).png" alt="change-icon" />
-                </span>
-              </div>
+    <div className="flex justify-center mt-20 mb-10 px-4">
+      <div className="space-y-10 max-w-[90%] w-full ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
+            <span className="text-[14px] font-[400]">Monthly Revenue</span>
+            <div className="mt-3 flex justify-between items-center">
+              <span className="text-[30px] font-[500]">
+                {monthlyRevenue.toLocaleString()}
+                <span className="text-[14px] ml-1">{paymentToken}</span>
+              </span>
+              <span className="text-[14px] font-[400] flex items-center gap-2">
+                <span>-0.03%</span>
+                <img src="Vector(3).png" alt="change-icon" />
+              </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 md:p-8 rounded-lg shadow-md space-y-6 w-full">
-            <div className="text-2xl font-semibold text-left">
-              Revenue Chart ({paymentToken})
+          <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
+            <span className="text-[14px] font-[400]">Monthly Gigs</span>
+            <div className="mt-3 flex justify-between items-center">
+              <span className="text-[30px] font-[500]">{monthlyGigs}</span>
+              <span className="text-[14px] font-[400] flex items-center gap-2">
+                <span>10%</span>
+                <img src="Vector(3).png" alt="change-icon" />
+              </span>
             </div>
+          </div>
 
-            <div className="w-full h-[400px]">
-              <Line data={chartData} options={options} />
+          <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
+            <span className="text-[14px] font-[400]">Total Gigs</span>
+            <div className="mt-3 flex justify-between items-center">
+              <span className="text-[30px] font-[500]">{totalGigs}</span>
+              <span className="text-[14px] font-[400] flex items-center gap-2">
+                <span>10%</span>
+                <img src="Vector(3).png" alt="change-icon" />
+              </span>
             </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 md:p-8 rounded-lg shadow-md space-y-6 w-full">
+          <div className="text-2xl font-semibold text-left">Revenue Chart</div>
+
+          <div className="w-full h-[400px]">
+            <Line data={chartData} options={options} />
           </div>
         </div>
       </div>

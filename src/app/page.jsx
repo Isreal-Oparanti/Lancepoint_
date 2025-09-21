@@ -9,7 +9,7 @@ import "./globals.css";
 
 function App() {
   return (
-    <div className="min-h-screen bg-image app-font">
+    <div className="min-h-screen ">
       <Header />
       <main className="px-4 sm:px-6 md:px-12 lg:px-20">
         <Hero />

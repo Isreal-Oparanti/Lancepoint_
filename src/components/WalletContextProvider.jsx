@@ -14,6 +14,7 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { useRouter } from "next/navigation"; // ✅ for redirect
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 const WalletBalance = () => {
@@ -25,13 +26,11 @@ const WalletBalance = () => {
     const fetchBalance = async () => {
       if (publicKey) {
         const lamports = await connection.getBalance(publicKey);
-        setBalance(lamports / LAMPORTS_PER_SOL); // convert lamports → SOL
+        setBalance(lamports / LAMPORTS_PER_SOL);
       }
     };
 
     fetchBalance();
-
-    // auto refresh every 10s
     const interval = setInterval(fetchBalance, 10000);
     return () => clearInterval(interval);
   }, [connection, publicKey]);
@@ -45,6 +44,19 @@ const WalletBalance = () => {
   );
 };
 
+const WalletRedirect = () => {
+  const { publicKey } = useWallet();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (publicKey) {
+      router.push("/dashboard"); // ✅ redirect once wallet connects
+    }
+  }, [publicKey, router]);
+
+  return null;
+};
+
 const WalletContextProvider = ({ children }) => {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -54,10 +66,11 @@ const WalletContextProvider = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <div className="min-h-screen ">
-            <header className="">
-              <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold ">Lancepoint</h1>
+          <WalletRedirect /> {/* ✅ Handles redirect */}
+          <div className="min-h-screen">
+            <header>
+              <div className="flex p-3 justify-between items-center">
+                <h1 className="text-2xl font-bold">Lancepoint</h1>
                 <div className="flex items-center gap-4">
                   <WalletBalance />
                   <WalletMultiButton />

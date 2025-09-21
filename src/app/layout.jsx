@@ -5,7 +5,7 @@ import WalletContextProvider from "@/components/WalletContextProvider";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen bg-gray-50">
+      <body className=" min-h-screen bg-image w-[full]">
         <WalletContextProvider>{children}</WalletContextProvider>
 
         <Toaster position="top-center" reverseOrder={false} />
