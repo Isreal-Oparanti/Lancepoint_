@@ -2,13 +2,14 @@
 // import Header from "@/components/Navbar/Header";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
+import Link from "next/link";
+
 
 export default function Home() {
   const { connected } = useWallet();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 font-sans relative overflow-hidden">
-      {/* Subtle background pattern */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmNmY1ZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIwOTEzOSAxLjc5MDg2MS00IDQtNCBoMTZjMi4yMDkxMzkgMCA0IDEuNzkwODYxIDQgNHYxNmMwIDIuMjA5MTM5LTEuNzkwODYxIDQtNCA0SDQwYy0yLjIwOTEzOSAwLTQtMS43OTA4NjEtNC00VjM0eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
       </div>
@@ -48,9 +49,9 @@ export default function Home() {
                 <span className="font-bold text-green-700">Wallet Connected!</span>
               </div>
               <p className="text-green-600 font-medium">You're all set to start freelancing or hiring talent worldwide!</p>
-              <button className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
+              <Link href="/dashboard" className="flex items-center space-x-2"><button className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition cursor-pointer" >
                 Go to Dashboard
-              </button>
+              </button></Link>
             </div>
           )}
           

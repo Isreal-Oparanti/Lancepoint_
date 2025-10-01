@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import Link from "next/link";
 import Image from "next/image";
@@ -38,6 +38,57 @@ const WalletBalance = () => {
   );
 };
 
+const CustomWalletButton = () => {
+  const { connected, publicKey, disconnect, connecting } = useWallet();
+  const { setVisible } = useWalletModal();
+
+  const baseButtonClass = "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-all transform hover:scale-105 duration-300 shadow-md shadow-purple-200";
+
+  if (connecting) {
+    return (
+      <button className={baseButtonClass} disabled>
+        Connecting...
+      </button>
+    );
+  }
+
+  if (connected) {
+    return (
+      <div className="relative group">
+        <button 
+          className={baseButtonClass}
+          onClick={() => setVisible(true)}
+        >
+          {publicKey && `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`}
+        </button>
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+          <button
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            onClick={() => setVisible(true)}
+          >
+            Change Wallet
+          </button>
+          <button
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            onClick={disconnect}
+          >
+            Disconnect
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button 
+      className={baseButtonClass}
+      onClick={() => setVisible(true)}
+    >
+      Connect Wallet
+    </button>
+  );
+};
+
 const Header = () => {
   const { connected } = useWallet();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -64,7 +115,7 @@ const Header = () => {
           {/* Wallet Section */}
           <div className="flex items-center space-x-4">
             <WalletBalance />
-            <WalletMultiButton className="!bg-gradient-to-r !from-purple-600 !to-indigo-600 hover:!from-purple-700 hover:!to-indigo-700 !text-white !font-bold !py-2 !px-6 !rounded-lg !transition-all !transform hover:!scale-105 !duration-300 !shadow-md !shadow-purple-200" />
+            <CustomWalletButton />
           </div>
         </div>
       </div>
