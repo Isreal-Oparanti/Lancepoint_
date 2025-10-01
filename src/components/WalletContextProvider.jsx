@@ -20,12 +20,6 @@ const WalletRedirect = () => {
   const { publicKey } = useWallet();
   const router = useRouter();
 
-  useEffect(() => {
-    if (publicKey) {
-      router.push("/dashboard");
-    }
-  }, [publicKey, router]);
-
   return null;
 };
 
