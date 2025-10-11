@@ -10,49 +10,15 @@ import {
 } from "@solana/wallet-adapter-react";
 import {
   WalletModalProvider,
-  WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useRouter } from "next/navigation";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-const WalletBalance = () => {
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
-  const [balance, setBalance] = useState(null);
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (publicKey) {
-        const lamports = await connection.getBalance(publicKey);
-        setBalance(lamports / LAMPORTS_PER_SOL);
-      }
-    };
-
-    fetchBalance();
-    const interval = setInterval(fetchBalance, 10000);
-    return () => clearInterval(interval);
-  }, [connection, publicKey]);
-
-  if (!publicKey) return null;
-
-  return (
-    <p className="text-amber-400 font-semibold">
-      Balance: {balance !== null ? balance.toFixed(4) : "…"} SOL
-    </p>
-  );
-};
-
 const WalletRedirect = () => {
   const { publicKey } = useWallet();
   const router = useRouter();
-
-  useEffect(() => {
-    if (publicKey) {
-      router.push("/dashboard");
-    }
-  }, [publicKey, router]);
 
   return null;
 };
@@ -66,19 +32,8 @@ const WalletContextProvider = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <WalletRedirect /> {/* ✅ Handles redirect */}
-          <div className="min-h-screen">
-            <header>
-              <div className="flex p-3 justify-between items-center">
-                <h1 className="text-2xl font-bold">Lancepoint</h1>
-                <div className="flex items-center gap-4">
-                  <WalletBalance />
-                  <WalletMultiButton />
-                </div>
-              </div>
-            </header>
-            <main className="p-5">{children}</main>
-          </div>
+          <WalletRedirect />
+          {children}
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
