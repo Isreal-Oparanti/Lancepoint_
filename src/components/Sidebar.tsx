@@ -88,9 +88,7 @@ const Sidebar = () => {
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-purple-100 truncate">
-                Freelancer
-              </p>
+        
               <p className="text-xs text-purple-300 truncate">
                 {getShortAddress()}
               </p>

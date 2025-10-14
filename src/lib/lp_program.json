@@ -1,0 +1,547 @@
+{
+  "address": "Ec4AkMDHHTf37m7KUuJi63x7x3KawbisTqS8XfLAXmdY",
+  "metadata": {
+    "name": "lp_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "apply_to_job",
+      "discriminator": [
+        0,
+        252,
+        167,
+        244,
+        145,
+        90,
+        227,
+        29
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  112,
+                  108,
+                  105,
+                  99,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job_post"
+              },
+              {
+                "kind": "account",
+                "path": "freelancer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "freelancer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "job_post"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "resume_link",
+          "type": "string"
+        },
+        {
+          "name": "expected_end_date",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "approve_application",
+      "discriminator": [
+        136,
+        47,
+        9,
+        33,
+        208,
+        120,
+        226,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true
+        },
+        {
+          "name": "job_post",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "approve_submission",
+      "discriminator": [
+        154,
+        76,
+        116,
+        120,
+        143,
+        128,
+        16,
+        205
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true
+        },
+        {
+          "name": "job_post",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job_post"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "freelancer",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "client_review",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "cancel_job",
+      "discriminator": [
+        126,
+        241,
+        155,
+        241,
+        50,
+        236,
+        83,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "job_post",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job_post"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_job_post",
+      "discriminator": [
+        179,
+        212,
+        183,
+        5,
+        92,
+        58,
+        110,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "job_post",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98,
+                  95,
+                  112,
+                  111,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "client"
+              },
+              {
+                "kind": "arg",
+                "path": "title"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job_post"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "start_date",
+          "type": "i64"
+        },
+        {
+          "name": "end_date",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "submit_work",
+      "discriminator": [
+        158,
+        80,
+        101,
+        51,
+        114,
+        130,
+        101,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true
+        },
+        {
+          "name": "freelancer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "job_post"
+        }
+      ],
+      "args": [
+        {
+          "name": "submission_link",
+          "type": "string"
+        },
+        {
+          "name": "narration",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Application",
+      "discriminator": [
+        219,
+        9,
+        27,
+        113,
+        208,
+        126,
+        203,
+        30
+      ]
+    },
+    {
+      "name": "JobPost",
+      "discriminator": [
+        209,
+        251,
+        190,
+        205,
+        19,
+        180,
+        151,
+        8
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to perform this action."
+    },
+    {
+      "code": 6001,
+      "name": "JobAlreadyFilled",
+      "msg": "This job has already been filled."
+    },
+    {
+      "code": 6002,
+      "name": "ApplicationNotApproved",
+      "msg": "Application has not been approved yet."
+    },
+    {
+      "code": 6003,
+      "name": "WorkNotCompleted",
+      "msg": "Work has not been completed yet."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidDates",
+      "msg": "Invalid dates provided."
+    },
+    {
+      "code": 6005,
+      "name": "InvalidInput",
+      "msg": "Invalid input provided."
+    },
+    {
+      "code": 6006,
+      "name": "InvalidAccount",
+      "msg": "Invalid account relationship."
+    },
+    {
+      "code": 6007,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount provided."
+    },
+    {
+      "code": 6008,
+      "name": "JobCancelled",
+      "msg": "Job has been cancelled."
+    },
+    {
+      "code": 6009,
+      "name": "JobAlreadyCancelled",
+      "msg": "Job has already been cancelled."
+    },
+    {
+      "code": 6010,
+      "name": "WorkAlreadySubmitted",
+      "msg": "Work has already been submitted."
+    },
+    {
+      "code": 6011,
+      "name": "ApplicationAlreadyApproved",
+      "msg": "Application has already been approved."
+    }
+  ],
+  "types": [
+    {
+      "name": "Application",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "applicant",
+            "type": "pubkey"
+          },
+          {
+            "name": "job_post",
+            "type": "pubkey"
+          },
+          {
+            "name": "resume_link",
+            "type": "string"
+          },
+          {
+            "name": "submission_link",
+            "type": "string"
+          },
+          {
+            "name": "narration",
+            "type": "string"
+          },
+          {
+            "name": "client_review",
+            "type": "string"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "completed",
+            "type": "bool"
+          },
+          {
+            "name": "expected_end_date",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobPost",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_filled",
+            "type": "bool"
+          },
+          {
+            "name": "cancelled",
+            "type": "bool"
+          },
+          {
+            "name": "start_date",
+            "type": "i64"
+          },
+          {
+            "name": "end_date",
+            "type": "i64"
+          },
+          {
+            "name": "escrow_bump",
+            "type": "u8"
+          },
+          {
+            "name": "freelancer",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
