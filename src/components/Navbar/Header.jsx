@@ -1,120 +1,124 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import Link from "next/link";
 import Image from "next/image";
-import { WalletComponent } from "../ConnectWallet";
-import { useRouter } from "next/navigation";
 
-const WALLET_KEY = "-walletlink:https://www.walletlink.org:Addresses";
-
-const useIsMobile = (breakpoint = 768) => {
-  const [isMobile, setIsMobile] = useState(false);
+const WalletBalance = () => {
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
+  const [balance, setBalance] = useState(null);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${breakpoint}px)`);
-
-    const handleChange = (e) => {
-      setIsMobile(e.matches);
+    const fetchBalance = async () => {
+      if (publicKey) {
+        try {
+          const lamports = await connection.getBalance(publicKey);
+          setBalance(lamports / LAMPORTS_PER_SOL);
+        } catch (error) {
+          console.error("Failed to fetch balance:", error);
+        }
+      }
     };
 
-    setIsMobile(mediaQuery.matches);
+    fetchBalance();
+    const interval = setInterval(fetchBalance, 10000);
+    return () => clearInterval(interval);
+  }, [connection, publicKey]);
 
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [breakpoint]);
-
-  return isMobile;
-};
-
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    const walletData = localStorage.getItem(WALLET_KEY);
-    const isHomePage = router.pathname === "/";
-
-    if (walletData && isHomePage) {
-      router.replace("/dashboard");
-    }
-  }, [router]);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  if (!publicKey) return null;
 
   return (
-    <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20">
-      <div className="flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Image
-            src="/icons/logo.svg"
-            alt="Lancepoint Logo"
-            width={32}
-            height={32}
-            className="h-6 w-6 sm:h-8 sm:w-8"
-          />
-          <a
-            href="/"
-            className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg text-black"
-            style={{ fontSize: "30px" }}
-          >
-            Lancepoint
-          </a>
-        </div>
+    <div className="text-sm text-purple-600 font-medium bg-purple-50 px-3 py-1 rounded-lg">
+      {balance !== null ? `${balance.toFixed(4)} SOL` : "Loading..."}
+    </div>
+  );
+};
 
-        {!isMobile && <WalletComponent />}
+const CustomWalletButton = () => {
+  const { connected, publicKey, disconnect, connecting } = useWallet();
+  const { setVisible } = useWalletModal();
 
-        <div className="md:hidden ml-auto">
+  const baseButtonClass = "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-all transform hover:scale-105 duration-300 shadow-md shadow-purple-200";
+
+  if (connecting) {
+    return (
+      <button className={baseButtonClass} disabled>
+        Connecting...
+      </button>
+    );
+  }
+
+  if (connected) {
+    return (
+      <div className="relative group">
+        <button 
+          className={baseButtonClass}
+          onClick={() => setVisible(true)}
+        >
+          {publicKey && `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`}
+        </button>
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
           <button
-            onClick={toggleMenu}
-            className="text-gray-700 focus:outline-none"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            onClick={() => setVisible(true)}
           >
-            {isMenuOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
+            Change Wallet
+          </button>
+          <button
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            onClick={disconnect}
+          >
+            Disconnect
           </button>
         </div>
       </div>
+    );
+  }
 
-      {isMenuOpen && isMobile && (
-        <div className="md:hidden mt-4 py-2">
-          <nav className="flex flex-col space-y-3">
-            <WalletComponent />
-          </nav>
+  return (
+    <button 
+      className={baseButtonClass}
+      onClick={() => setVisible(true)}
+    >
+      Connect Wallet
+    </button>
+  );
+};
+
+const Header = () => {
+  const { connected } = useWallet();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center p-1.5">
+                <Image
+                  src="/image.png"
+                  alt="Lancepoint Logo"
+                  width={20}
+                  height={20}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-xl font-bold">Lancepoint</span>
+            </Link>
+          </div>
+
+          {/* Wallet Section */}
+          <div className="flex items-center space-x-4">
+            <WalletBalance />
+            <CustomWalletButton />
+          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };

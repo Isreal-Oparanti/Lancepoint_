@@ -9,8 +9,8 @@
 
 .plus-jakarta-sans-myf {
   font-family: "Plus Jakarta Sans", sans-serif;
-  
-   
+
+
 }
 
 .font-plus {
@@ -37,48 +37,54 @@ header-nav-color {
   background-size: cover;
   background-position: center;
 }
+
 .atom-container {
   position: relative;
   width: 250px;
   height: 250px;
 }
 
- 
+
 .atom-container {
   position: relative;
   width: 250px;
   height: 250px;
 }
 
- 
+
 .atom-orbit {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  border: 2px solid rgba(255,255,255,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   animation: spin-right 12s linear infinite;
 }
 
- 
+
 .electron {
   position: absolute;
-  top: 50%; left: 50%;
-  width: 80px; height: 80px;
-  margin: -40px;           
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 
   transform-origin: center center;
 }
 
- 
+
 .electron1 {
   background-image: url("/images/profile1.png");
-  transform: rotate(   0deg) translateX(125px) rotate(   0deg);
+  transform: rotate(0deg) translateX(125px) rotate(0deg);
 }
+
 .electron2 {
   background-image: url("/images/profile2.png");
   transform: rotate(51.4286deg) translateX(125px) rotate(-51.4286deg);
@@ -88,33 +94,41 @@ header-nav-color {
   background-image: url("/images/profile3.png");
   transform: rotate(102.8571deg) translateX(125px) rotate(-102.8571deg);
 }
+
 .electron4 {
   background-image: url("/images/profile4.png");
   transform: rotate(154.2857deg) translateX(125px) rotate(-154.2857deg);
 }
+
 .electron5 {
   background-image: url("/images/profile5.png");
   transform: rotate(205.7143deg) translateX(125px) rotate(-205.7143deg);
 }
+
 .electron6 {
   background-image: url("/images/profile6.png");
   transform: rotate(257.1429deg) translateX(125px) rotate(-257.1429deg);
 }
+
 .electron7 {
   background-image: url("/images/profile7.png");
   transform: rotate(308.5714deg) translateX(125px) rotate(-308.5714deg);
 }
 
- 
+
 .atom-nucleus {
-  position:absolute; inset: 50% auto auto 50%;
-  width:60px; height:60px; margin:-30px; 
-  background:#fff url(/icons/play.svg) center/36px no-repeat;
-  border-radius:50%; box-shadow:0 4px 8px rgba(0,0,0,0.2);
-  z-index:10;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px;
+  background: #fff url(/icons/play.svg) center/36px no-repeat;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
- 
- 
+
+
 .electron-wrapper {
   position: absolute;
   top: 0;
@@ -127,8 +141,13 @@ header-nav-color {
 
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
