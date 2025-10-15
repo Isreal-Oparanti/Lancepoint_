@@ -1,5 +1,5 @@
 {
-  "address": "Ec4AkMDHHTf37m7KUuJi63x7x3KawbisTqS8XfLAXmdY",
+  "address": "EzpNWk2rW2byqnfsW5ctmj952hF2bqEA2BUCL2hBqSbS",
   "metadata": {
     "name": "lp_program",
     "version": "0.1.0",
@@ -321,6 +321,40 @@
       ]
     },
     {
+      "name": "reject_submission",
+      "discriminator": [
+        2,
+        92,
+        1,
+        81,
+        148,
+        156,
+        6,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true
+        },
+        {
+          "name": "job_post",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "client_review",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "submit_work",
       "discriminator": [
         158,
@@ -446,6 +480,21 @@
       "code": 6011,
       "name": "ApplicationAlreadyApproved",
       "msg": "Application has already been approved."
+    },
+    {
+      "code": 6012,
+      "name": "WorkAlreadyApproved",
+      "msg": "Work has already been approved."
+    },
+    {
+      "code": 6013,
+      "name": "WorkAlreadyRejected",
+      "msg": "Work has already been rejected."
+    },
+    {
+      "code": 6014,
+      "name": "InsufficientEscrowBalance",
+      "msg": "Escrow account does not have enough balance."
     }
   ],
   "types": [
@@ -483,7 +532,15 @@
             "type": "bool"
           },
           {
+            "name": "submitted",
+            "type": "bool"
+          },
+          {
             "name": "completed",
+            "type": "bool"
+          },
+          {
+            "name": "rejected",
             "type": "bool"
           },
           {

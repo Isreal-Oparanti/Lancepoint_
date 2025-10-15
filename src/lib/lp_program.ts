@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/lp_program.json`.
  */
 export type LpProgram = {
-  "address": "Ec4AkMDHHTf37m7KUuJi63x7x3KawbisTqS8XfLAXmdY",
+  "address": "EzpNWk2rW2byqnfsW5ctmj952hF2bqEA2BUCL2hBqSbS",
   "metadata": {
     "name": "lpProgram",
     "version": "0.1.0",
@@ -327,6 +327,40 @@ export type LpProgram = {
       ]
     },
     {
+      "name": "rejectSubmission",
+      "discriminator": [
+        2,
+        92,
+        1,
+        81,
+        148,
+        156,
+        6,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "application",
+          "writable": true
+        },
+        {
+          "name": "jobPost",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "clientReview",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "submitWork",
       "discriminator": [
         158,
@@ -452,6 +486,21 @@ export type LpProgram = {
       "code": 6011,
       "name": "applicationAlreadyApproved",
       "msg": "Application has already been approved."
+    },
+    {
+      "code": 6012,
+      "name": "workAlreadyApproved",
+      "msg": "Work has already been approved."
+    },
+    {
+      "code": 6013,
+      "name": "workAlreadyRejected",
+      "msg": "Work has already been rejected."
+    },
+    {
+      "code": 6014,
+      "name": "insufficientEscrowBalance",
+      "msg": "Escrow account does not have enough balance."
     }
   ],
   "types": [
@@ -489,7 +538,15 @@ export type LpProgram = {
             "type": "bool"
           },
           {
+            "name": "submitted",
+            "type": "bool"
+          },
+          {
             "name": "completed",
+            "type": "bool"
+          },
+          {
+            "name": "rejected",
             "type": "bool"
           },
           {
