@@ -220,8 +220,7 @@ export default function NewGig() {
       }
 
       if (error.message?.includes("already been processed")) {
-        toast("Duplicate submission ignored — transaction already confirmed.");
-        return;
+ toast.success("Success");        return;
       }
 
       let message = error.message || "Transaction failed";
