@@ -60,8 +60,8 @@ export default function Home() {
               <div className="absolute -inset-4 bg-purple-200 rounded-full blur-2xl opacity-50 animate-pulse"></div>
               <div className="relative bg-gradient-to-br from-purple-50 to-white border border-purple-100 rounded-2xl p-1 shadow-xl">
                 <div className="bg-white rounded-xl overflow-hidden">
-                  <Image
-                    src="/freelancer-cuate.png"
+                  <img
+                    src="/Freelancer-cuate.png"
                     alt="Decentralized Freelancing"
                     width={800}
                     height={400}
