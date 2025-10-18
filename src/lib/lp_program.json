@@ -1,5 +1,5 @@
 {
-  "address": "EzpNWk2rW2byqnfsW5ctmj952hF2bqEA2BUCL2hBqSbS",
+  "address": "AkDSbrdvrnfe558WDZEkGuJUayt8nChyog6bcGr1hVFm",
   "metadata": {
     "name": "lp_program",
     "version": "0.1.0",
@@ -159,6 +159,33 @@
           "writable": true
         },
         {
+          "name": "freelancer_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "freelancer"
+              }
+            ]
+          }
+        },
+        {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
@@ -218,6 +245,51 @@
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "get_user_stats",
+      "discriminator": [
+        38,
+        55,
+        50,
+        132,
+        115,
+        127,
+        50,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "user_stats",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user"
         }
       ],
       "args": []
@@ -283,6 +355,33 @@
               {
                 "kind": "account",
                 "path": "job_post"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "client"
               }
             ]
           }
@@ -417,6 +516,19 @@
         180,
         151,
         8
+      ]
+    },
+    {
+      "name": "UserStats",
+      "discriminator": [
+        176,
+        223,
+        136,
+        27,
+        122,
+        79,
+        32,
+        227
       ]
     }
   ],
@@ -596,6 +708,34 @@
             "type": {
               "option": "pubkey"
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_gigs_posted",
+            "type": "u64"
+          },
+          {
+            "name": "total_revenue_earned",
+            "type": "u64"
+          },
+          {
+            "name": "monthly_gigs",
+            "type": "u64"
+          },
+          {
+            "name": "monthly_revenue",
+            "type": "u64"
+          },
+          {
+            "name": "last_updated_month",
+            "type": "u8"
           }
         ]
       }

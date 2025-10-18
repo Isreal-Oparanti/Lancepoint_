@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { Drawer, Button, Input, Spin, Empty, Tag } from "antd";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { AnchorProvider, Program, web3, BN, setProvider } from "@coral-xyz/anchor";
+import {
+  AnchorProvider,
+  Program,
+  web3,
+  BN,
+  setProvider,
+} from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import idl from "../../lib/lp_program.json";
 import toast from "react-hot-toast";
@@ -19,7 +25,9 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [myGigs, setMyGigs] = useState<any[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerType, setDrawerType] = useState<"approve" | "submit" | null>(null);
+  const [drawerType, setDrawerType] = useState<"approve" | "submit" | null>(
+    null
+  );
   const [selectedGig, setSelectedGig] = useState<any>(null);
 
   // Fields for submission
@@ -54,7 +62,9 @@ export default function Orders() {
         .filter((job) => job.account.client.toString() === publicKey.toString())
         .map((job) => {
           const jobApplications = allApplications
-            .filter((a) => a.account.jobPost.toString() === job.publicKey.toString())
+            .filter(
+              (a) => a.account.jobPost.toString() === job.publicKey.toString()
+            )
             .map((a) => ({
               pubkey: a.publicKey.toString(),
               ...a.account,
@@ -111,7 +121,9 @@ export default function Orders() {
       const provider = getProvider();
       const program = new Program<LpProgram>(idl, provider);
 
-      const latestBlockhash = await provider.connection.getLatestBlockhash("confirmed");
+      const latestBlockhash = await provider.connection.getLatestBlockhash(
+        "confirmed"
+      );
 
       const [applicationPda] = PublicKey.findProgramAddressSync(
         [
@@ -138,14 +150,18 @@ export default function Orders() {
       tx.feePayer = provider.wallet.publicKey;
 
       const signedTx = await provider.wallet.signTransaction(tx);
-      const txSig = await provider.connection.sendRawTransaction(signedTx.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: "confirmed",
-      });
+      const txSig = await provider.connection.sendRawTransaction(
+        signedTx.serialize(),
+        {
+          skipPreflight: false,
+          preflightCommitment: "confirmed",
+        }
+      );
 
       console.log("✅ Approval Tx sent:", txSig);
-      toast.success(`✅ Approved ${app.applicant.toString().slice(0, 6)}... Tx: ${txSig}`);
-
+      toast.success(
+        `✅ Approved ${app.applicant.toString().slice(0, 6)}... Tx: ${txSig}`
+      );
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },
@@ -163,12 +179,15 @@ export default function Orders() {
       }
 
       if (error.message?.includes("already been processed")) {
- toast.success("Success");        return;
+        toast.success("Success");
+        return;
       }
 
       let message = error.message || "Approval failed";
       if (error.logs) {
-        const logMsg = error.logs.find((log: string) => log.includes("Error Message:"));
+        const logMsg = error.logs.find((log: string) =>
+          log.includes("Error Message:")
+        );
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
@@ -177,8 +196,6 @@ export default function Orders() {
       setLoading(false);
     }
   };
-
-
 
   const handleRejectSubmission = async (gig: any, app: any, review: string) => {
     if (!connected || !publicKey) {
@@ -190,7 +207,9 @@ export default function Orders() {
     try {
       const provider = getProvider();
       const program = new Program<LpProgram>(idl, provider);
-      const latestBlockhash = await provider.connection.getLatestBlockhash("confirmed");
+      const latestBlockhash = await provider.connection.getLatestBlockhash(
+        "confirmed"
+      );
 
       const [applicationPda] = PublicKey.findProgramAddressSync(
         [
@@ -218,10 +237,13 @@ export default function Orders() {
       tx.feePayer = provider.wallet.publicKey;
 
       const signedTx = await provider.wallet.signTransaction(tx);
-      const txSig = await provider.connection.sendRawTransaction(signedTx.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: "confirmed",
-      });
+      const txSig = await provider.connection.sendRawTransaction(
+        signedTx.serialize(),
+        {
+          skipPreflight: false,
+          preflightCommitment: "confirmed",
+        }
+      );
 
       console.log("❌ Rejection Tx sent:", txSig);
       toast.error(`❌ Work rejected! Tx: ${txSig}`);
@@ -239,7 +261,9 @@ export default function Orders() {
       // Enhanced error handling
       if (error?.logs) {
         console.error("Transaction logs:", error.logs);
-        const errorLog = error.logs.find((log: string) => log.includes("Error Message:"));
+        const errorLog = error.logs.find((log: string) =>
+          log.includes("Error Message:")
+        );
         if (errorLog) {
           const errorMsg = errorLog.split("Error Message: ")[1];
           toast.error(`Rejection failed: ${errorMsg}`);
@@ -248,7 +272,9 @@ export default function Orders() {
       }
 
       if (error?.message?.includes("Transaction simulation failed")) {
-        toast.error("Transaction simulation failed. Check console for details.");
+        toast.error(
+          "Transaction simulation failed. Check console for details."
+        );
         return;
       }
 
@@ -257,8 +283,6 @@ export default function Orders() {
       setLoading(false);
     }
   };
-
-
 
   const handleSubmitWork = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,7 +302,9 @@ export default function Orders() {
       const provider = getProvider();
       const program = new Program<LpProgram>(idl, provider);
 
-      const latestBlockhash = await provider.connection.getLatestBlockhash("confirmed");
+      const latestBlockhash = await provider.connection.getLatestBlockhash(
+        "confirmed"
+      );
 
       const [applicationPda] = PublicKey.findProgramAddressSync(
         [
@@ -304,10 +330,13 @@ export default function Orders() {
       tx.feePayer = provider.wallet.publicKey;
 
       const signedTx = await provider.wallet.signTransaction(tx);
-      const txSig = await provider.connection.sendRawTransaction(signedTx.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: "confirmed",
-      });
+      const txSig = await provider.connection.sendRawTransaction(
+        signedTx.serialize(),
+        {
+          skipPreflight: false,
+          preflightCommitment: "confirmed",
+        }
+      );
 
       console.log("✅ Submission Tx sent:", txSig);
       toast.success(`✅ Work submitted! Tx: ${txSig}`);
@@ -331,12 +360,15 @@ export default function Orders() {
       }
 
       if (error.message?.includes("already been processed")) {
- toast.success("Success");        return;
+        toast.success("Success");
+        return;
       }
 
       let message = error.message || "Submission failed";
       if (error.logs) {
-        const logMsg = error.logs.find((log: string) => log.includes("Error Message:"));
+        const logMsg = error.logs.find((log: string) =>
+          log.includes("Error Message:")
+        );
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
@@ -346,8 +378,11 @@ export default function Orders() {
     }
   };
 
-
-  const handleApproveSubmission = async (gig: any, app: any, review: string) => {
+  const handleApproveSubmission = async (
+    gig: any,
+    app: any,
+    review: string
+  ) => {
     if (!connected || !publicKey) {
       toast.error("Please connect your wallet first");
       return;
@@ -358,8 +393,11 @@ export default function Orders() {
       const provider = getProvider();
       const program = new Program<LpProgram>(idl, provider);
 
-      const latestBlockhash = await provider.connection.getLatestBlockhash("confirmed");
+      const latestBlockhash = await provider.connection.getLatestBlockhash(
+        "confirmed"
+      );
 
+      // PDAs
       const [applicationPda] = PublicKey.findProgramAddressSync(
         [
           Buffer.from("application"),
@@ -369,17 +407,30 @@ export default function Orders() {
         program.programId
       );
 
-      console.log("Approving submission for:", app.applicant);
+      const [escrowPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("escrow"), new PublicKey(gig.id).toBuffer()],
+        program.programId
+      );
 
-      // Temporary: Only update application state without escrow transfer
+      const [freelancerStatsPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("user_stats"), new PublicKey(app.applicant).toBuffer()],
+        program.programId
+      );
+
+      console.log("Approving submission for:", app.applicant);
+      console.log("Escrow PDA:", escrowPda.toBase58());
+      console.log("Freelancer Stats PDA:", freelancerStatsPda.toBase58());
+
       const tx = await program.methods
         .approveSubmission(review)
         .accounts({
           application: applicationPda,
           jobPost: new PublicKey(gig.id),
+          escrow: escrowPda,
           client: provider.wallet.publicKey,
           freelancer: new PublicKey(app.applicant),
-          // Remove escrow and systemProgram for now to avoid the error
+          freelancerStats: freelancerStatsPda,
+          systemProgram: web3.SystemProgram.programId,
         } as any)
         .transaction();
 
@@ -387,13 +438,16 @@ export default function Orders() {
       tx.feePayer = provider.wallet.publicKey;
 
       const signedTx = await provider.wallet.signTransaction(tx);
-      const txSig = await provider.connection.sendRawTransaction(signedTx.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: "confirmed",
-      });
+      const txSig = await provider.connection.sendRawTransaction(
+        signedTx.serialize(),
+        {
+          skipPreflight: false,
+          preflightCommitment: "confirmed",
+        }
+      );
 
       console.log("✅ Work approved Tx:", txSig);
-      toast.success(`✅ Work approved! Tx: ${txSig}`);
+      toast.success(`✅ Work approved & funds released! Tx: ${txSig}`);
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },
@@ -406,11 +460,12 @@ export default function Orders() {
       console.error("❌ Approval error:", error);
 
       if (error?.logs) {
-        console.error("Transaction logs:", error.logs);
-        const errorLog = error.logs.find((log: string) => log.includes("Error Message:"));
+        const errorLog = error.logs.find((log: string) =>
+          log.includes("Error Message:")
+        );
         if (errorLog) {
           const errorMsg = errorLog.split("Error Message: ")[1];
-          toast.error(`Transaction failed`);
+          toast.error(`Transaction failed: ${errorMsg}`);
           return;
         }
       }
@@ -421,13 +476,11 @@ export default function Orders() {
     }
   };
 
-
   if (loading)
     return (
       <div className="flex bg-gray-50 min-h-screen">
         <Sidebar />
         <Spin tip="Loading your gigs..." size="large" fullscreen />
-
       </div>
     );
 
@@ -468,6 +521,18 @@ export default function Orders() {
                 ) : (
                   <Tag color="green">Applied by me</Tag>
                 )}
+
+                {gig.application?.completed &&
+                  gig.application?.clientReview && (
+                    <div className="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                      <h4 className="font-medium text-gray-800 mb-1">
+                        💬 Client Feedback
+                      </h4>
+                      <p className="text-gray-700 text-sm">
+                        {gig.application.clientReview}
+                      </p>
+                    </div>
+                  )}
 
                 <div className="mt-3 flex gap-2">
                   {gig.role === "creator" ? (
@@ -525,8 +590,8 @@ export default function Orders() {
                   className="border border-gray-200 rounded-xl p-4 mb-4 shadow-sm"
                 >
                   <p>
-                    <b>Applicant:</b>{" "}
-                    {app.applicant.toString().slice(0, 6)}...{app.applicant.toString().slice(-4)}
+                    <b>Applicant:</b> {app.applicant.toString().slice(0, 6)}...
+                    {app.applicant.toString().slice(-4)}
                   </p>
                   <p>
                     <b>Resume:</b>{" "}
@@ -550,13 +615,17 @@ export default function Orders() {
                       <Button
                         type="primary"
                         className="bg-purple-600 hover:bg-purple-700 border-none text-white"
-                        onClick={() => handleApproveApplication(selectedGig, app)}
+                        onClick={() =>
+                          handleApproveApplication(selectedGig, app)
+                        }
                       >
                         Approve Application
                       </Button>
                       <Button
                         danger
-                        onClick={() => toast("❌ Proposal denied (not stored on-chain)")}
+                        onClick={() =>
+                          toast("❌ Proposal denied (not stored on-chain)")
+                        }
                       >
                         Deny
                       </Button>
@@ -564,7 +633,9 @@ export default function Orders() {
                   ) : app.submissionLink ? (
                     <>
                       <div className="mt-4 border-t pt-3">
-                        <p><b>🧾 Work Submitted:</b></p>
+                        <p>
+                          <b>🧾 Work Submitted:</b>
+                        </p>
                         <p>
                           <a
                             href={app.submissionLink}
@@ -576,11 +647,14 @@ export default function Orders() {
                           </a>
                         </p>
                         <p className="mt-2 text-gray-700 text-sm">
-                          <b>Narration:</b> {app.narration || "No narration provided"}
+                          <b>Narration:</b>{" "}
+                          {app.narration || "No narration provided"}
                         </p>
 
                         {app.completed ? (
-                          <Tag color="green" className="mt-2">✅ Work Approved</Tag>
+                          <Tag color="green" className="mt-2">
+                            ✅ Work Approved
+                          </Tag>
                         ) : (
                           <div className="mt-5 space-y-5">
                             <label className="block text-base font-medium text-gray-700">
@@ -599,35 +673,51 @@ export default function Orders() {
                                 size="large"
                                 className="bg-green-600 hover:bg-green-700 border-none text-white px-6 py-2.5 text-base font-medium"
                                 onClick={() => {
-                                  const reviewInput = document.getElementById(`review-${app.pubkey}`) as HTMLTextAreaElement;
-                                  const review = reviewInput?.value || "Great work! Approved ✅";
-                                  handleApproveSubmission(selectedGig, app, review);
+                                  const reviewInput = document.getElementById(
+                                    `review-${app.pubkey}`
+                                  ) as HTMLTextAreaElement;
+                                  const review =
+                                    reviewInput?.value ||
+                                    "Great work! Approved ✅";
+                                  handleApproveSubmission(
+                                    selectedGig,
+                                    app,
+                                    review
+                                  );
                                 }}
                               >
                                 ✅ Approve Work & Release Payment
                               </Button>
-
 
                               <Button
                                 danger
                                 size="large"
                                 className="px-6 py-2.5 text-base font-medium"
                                 onClick={() => {
-                                  const reviewInput = document.getElementById(`review-${app.pubkey}`) as HTMLTextAreaElement;
-                                  const review = reviewInput?.value || "Submission rejected - needs revision";
-                                  handleRejectSubmission(selectedGig, app, review);
+                                  const reviewInput = document.getElementById(
+                                    `review-${app.pubkey}`
+                                  ) as HTMLTextAreaElement;
+                                  const review =
+                                    reviewInput?.value ||
+                                    "Submission rejected - needs revision";
+                                  handleRejectSubmission(
+                                    selectedGig,
+                                    app,
+                                    review
+                                  );
                                 }}
                               >
                                 ❌ Reject Work
                               </Button>
                             </div>
                           </div>
-
                         )}
                       </div>
                     </>
                   ) : (
-                    <Tag color="blue" className="mt-2">✅ Application Approved - Waiting for submission...</Tag>
+                    <Tag color="blue" className="mt-2">
+                      ✅ Application Approved - Waiting for submission...
+                    </Tag>
                   )}
                 </div>
               ))
@@ -677,7 +767,6 @@ export default function Orders() {
               Submit Work
             </Button>
           </form>
-
         ) : (
           <p>No action selected.</p>
         )}

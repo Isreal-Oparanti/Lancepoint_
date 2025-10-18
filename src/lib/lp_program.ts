@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/lp_program.json`.
  */
 export type LpProgram = {
-  "address": "EzpNWk2rW2byqnfsW5ctmj952hF2bqEA2BUCL2hBqSbS",
+  "address": "AkDSbrdvrnfe558WDZEkGuJUayt8nChyog6bcGr1hVFm",
   "metadata": {
     "name": "lpProgram",
     "version": "0.1.0",
@@ -165,6 +165,33 @@ export type LpProgram = {
           "writable": true
         },
         {
+          "name": "freelancerStats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "freelancer"
+              }
+            ]
+          }
+        },
+        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -224,6 +251,51 @@ export type LpProgram = {
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "getUserStats",
+      "discriminator": [
+        38,
+        55,
+        50,
+        132,
+        115,
+        127,
+        50,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "userStats",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user"
         }
       ],
       "args": []
@@ -289,6 +361,33 @@ export type LpProgram = {
               {
                 "kind": "account",
                 "path": "jobPost"
+              }
+            ]
+          }
+        },
+        {
+          "name": "clientStats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "client"
               }
             ]
           }
@@ -423,6 +522,19 @@ export type LpProgram = {
         180,
         151,
         8
+      ]
+    },
+    {
+      "name": "userStats",
+      "discriminator": [
+        176,
+        223,
+        136,
+        27,
+        122,
+        79,
+        32,
+        227
       ]
     }
   ],
@@ -602,6 +714,34 @@ export type LpProgram = {
             "type": {
               "option": "pubkey"
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "userStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "totalGigsPosted",
+            "type": "u64"
+          },
+          {
+            "name": "totalRevenueEarned",
+            "type": "u64"
+          },
+          {
+            "name": "monthlyGigs",
+            "type": "u64"
+          },
+          {
+            "name": "monthlyRevenue",
+            "type": "u64"
+          },
+          {
+            "name": "lastUpdatedMonth",
+            "type": "u8"
           }
         ]
       }
