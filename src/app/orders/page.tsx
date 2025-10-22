@@ -159,9 +159,52 @@ export default function Orders() {
       );
 
       console.log("✅ Approval Tx sent:", txSig);
-      toast.success(
-        `✅ Approved ${app.applicant.toString().slice(0, 6)}... Tx: ${txSig}`
-      );
+      toast.custom((t) => (
+        <div
+          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-gray-200 shadow-md rounded-lg p-4 w-full max-w-[480px] ${t.visible ? "animate-enter" : "animate-leave"
+            }`}
+        >
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-gray-900 mb-1">
+              ✅ Approved {app.applicant.toString().slice(0, 6)}…
+            </div>
+
+
+            <div
+              className="font-mono text-xs text-gray-600 break-all bg-gray-50 rounded-md p-2 mt-1 max-h-[70px] overflow-y-auto"
+              style={{ wordBreak: "break-all", userSelect: "text" }}
+            >
+              {txSig}
+            </div>
+
+            <a
+              href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+            >
+              View on Explorer ↗
+            </a>
+
+          </div>
+
+
+          <button
+            onClick={async (e) => {
+              e.stopPropagation();
+              try {
+                await navigator.clipboard.writeText(txSig);
+                toast.success("Transaction hash copied ✅");
+              } catch {
+                window.prompt("Copy TX hash:", txSig);
+              }
+            }}
+            className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-1 whitespace-nowrap"
+          >
+            Copy
+          </button>
+        </div>
+      ), { duration: 5000, position: "top-right" });
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },
@@ -246,7 +289,50 @@ export default function Orders() {
       );
 
       console.log("❌ Rejection Tx sent:", txSig);
-      toast.error(`❌ Work rejected! Tx: ${txSig}`);
+      toast.custom(
+        (t) => (
+          <div
+            className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-red-200 shadow-md rounded-lg p-4 w-full max-w-[480px] ${t.visible ? "animate-enter" : "animate-leave"
+              }`}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-red-600 mb-1">
+                ❌ Work Rejected
+              </div>
+              <div
+                className="font-mono text-xs text-gray-600 break-all bg-gray-50 rounded-md p-2 mt-1 max-h-[70px] overflow-y-auto"
+                style={{ wordBreak: "break-all", userSelect: "text" }}
+              >
+                {txSig}
+              </div>
+              <a
+                href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+              >
+                View on Explorer ↗
+              </a>
+            </div>
+
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await navigator.clipboard.writeText(txSig);
+                  toast.success("Transaction hash copied ✅");
+                } catch {
+                  window.prompt("Copy TX hash:", txSig);
+                }
+              }}
+              className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-1 whitespace-nowrap"
+            >
+              Copy
+            </button>
+          </div>
+        ),
+        { duration: 5000, position: "top-right" }
+      );
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },
@@ -339,7 +425,50 @@ export default function Orders() {
       );
 
       console.log("✅ Submission Tx sent:", txSig);
-      toast.success(`✅ Work submitted! Tx: ${txSig}`);
+      toast.custom(
+        (t) => (
+          <div
+            className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-yellow-200 shadow-md rounded-lg p-4 w-full max-w-[480px] ${t.visible ? "animate-enter" : "animate-leave"
+              }`}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-yellow-600 mb-1">
+                ✅ Work Submitted
+              </div>
+              <div
+                className="font-mono text-xs text-gray-600 break-all bg-gray-50 rounded-md p-2 mt-1 max-h-[70px] overflow-y-auto"
+                style={{ wordBreak: "break-all", userSelect: "text" }}
+              >
+                {txSig}
+              </div>
+              <a
+                href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+              >
+                View on Explorer ↗
+              </a>
+            </div>
+
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await navigator.clipboard.writeText(txSig);
+                  toast.success("Transaction hash copied ✅");
+                } catch {
+                  window.prompt("Copy TX hash:", txSig);
+                }
+              }}
+              className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-1 whitespace-nowrap"
+            >
+              Copy
+            </button>
+          </div>
+        ),
+        { duration: 5000, position: "top-right" }
+      );
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },
@@ -447,7 +576,50 @@ export default function Orders() {
       );
 
       console.log("✅ Work approved Tx:", txSig);
-      toast.success(`✅ Work approved & funds released! Tx: ${txSig}`);
+      toast.custom(
+        (t) => (
+          <div
+            className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-green-200 shadow-md rounded-lg p-4 w-full max-w-[480px] ${t.visible ? "animate-enter" : "animate-leave"
+              }`}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-green-600 mb-1">
+                ✅ Work Approved & Funds Released
+              </div>
+              <div
+                className="font-mono text-xs text-gray-600 break-all bg-gray-50 rounded-md p-2 mt-1 max-h-[70px] overflow-y-auto"
+                style={{ wordBreak: "break-all", userSelect: "text" }}
+              >
+                {txSig}
+              </div>
+              <a
+                href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+              >
+                View on Explorer ↗
+              </a>
+            </div>
+
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await navigator.clipboard.writeText(txSig);
+                  toast.success("Transaction hash copied ✅");
+                } catch {
+                  window.prompt("Copy TX hash:", txSig);
+                }
+              }}
+              className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-1 whitespace-nowrap"
+            >
+              Copy
+            </button>
+          </div>
+        ),
+        { duration: 5000, position: "top-right" }
+      );
 
       await provider.connection.confirmTransaction(
         { signature: txSig, ...latestBlockhash },

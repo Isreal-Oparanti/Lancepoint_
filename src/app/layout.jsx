@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
           </ConfigProvider>
         </WalletContextProvider>
 
-        <Toaster position="top-center" reverseOrder={false} />
+        <Toaster position="top-left" reverseOrder={false} />
       </body>
     </html>
   );

@@ -193,7 +193,53 @@ export default function NewGig() {
       });
 
       console.log("✅ Transaction sent:", txSig);
-      toast.success(`Gig created successfully! Tx: ${txSig}`);
+      toast.custom(
+        (t) => (
+          <div
+            className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-green-200 shadow-md rounded-lg p-4 w-full max-w-[480px] ${t.visible ? "animate-enter" : "animate-leave"
+              }`}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-green-600 mb-1">
+                ✅ Gig Created Successfully
+              </div>
+
+              <div
+                className="font-mono text-xs text-gray-600 break-all bg-gray-50 rounded-md p-2 mt-1 max-h-[70px] overflow-y-auto"
+                style={{ wordBreak: "break-all", userSelect: "text" }}
+              >
+                {txSig}
+              </div>
+
+              <a
+                href={`https://explorer.solana.com/tx/${txSig}?cluster=devnet`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+              >
+                View on Explorer ↗
+              </a>
+            </div>
+
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await navigator.clipboard.writeText(txSig);
+                  toast.success("Transaction hash copied ✅");
+                } catch {
+                  window.prompt("Copy TX hash:", txSig);
+                }
+              }}
+              className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-1 whitespace-nowrap"
+            >
+              Copy
+            </button>
+          </div>
+        ),
+        { duration: 5000, position: "top-right" }
+      );
+
 
       // Wait for confirmation
       await provider.connection.confirmTransaction(
@@ -220,7 +266,7 @@ export default function NewGig() {
       }
 
       if (error.message?.includes("already been processed")) {
- toast.success("Success");        return;
+        toast.success("Success"); return;
       }
 
       let message = error.message || "Transaction failed";
@@ -353,7 +399,7 @@ export default function NewGig() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !connected}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer"
                   >
                     {isSubmitting ? "Creating..." : "Create Job Post"}
                   </button>

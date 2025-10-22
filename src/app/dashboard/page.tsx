@@ -9,6 +9,12 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  WalletOutlined,
+  ShoppingOutlined,
+  AppstoreAddOutlined,
+  DollarCircleOutlined,
+} from "@ant-design/icons";
 import { Line } from "react-chartjs-2";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -160,24 +166,29 @@ export default function Dashboard() {
               value={userStats ? userStats.monthlyRevenue.toFixed(2) : "0.00"}
               token="SOL"
               iconColor="bg-purple-100 text-purple-600"
+              iconType="revenue"
             />
             <StatCard
               title="Monthly Gigs"
               value={userStats ? userStats.monthlyGigs : 0}
               iconColor="bg-green-100 text-green-600"
+              iconType="gigs"
             />
             <StatCard
               title="Total Gigs Posted"
               value={userStats ? userStats.totalGigsPosted : 0}
               iconColor="bg-indigo-100 text-indigo-600"
+              iconType="posted"
             />
             <StatCard
               title="Total Earnings"
               value={userStats ? userStats.totalRevenueEarned.toFixed(2) : "0.00"}
               token="SOL"
               iconColor="bg-blue-100 text-blue-600"
+              iconType="earnings"
             />
           </div>
+
 
           {/* --- Revenue Chart --- */}
           <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100">
@@ -206,11 +217,12 @@ export default function Dashboard() {
 }
 
 // --- Stat Card ---
-function StatCard({ title, value, token, iconColor }: any) {
-  return (
-    <div className="bg-white rounded-2xl shadow-sm p-5 sm:p-6 border border-gray-100 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className={`p-2 rounded-lg ${iconColor}`}>
+function StatCard({ title, value, token, iconColor, iconType }: any) {
+  const renderIcon = () => {
+    switch (iconType) {
+      case "revenue":
+        // 💰 Coin/Wallet Icon
+        return (
           <svg
             className="w-6 h-6 sm:w-7 sm:h-7"
             fill="none"
@@ -224,7 +236,71 @@ function StatCard({ title, value, token, iconColor }: any) {
               d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-        </div>
+        );
+
+      case "gigs":
+        // 📅 Calendar/Task Icon
+        return (
+          <svg
+            className="w-6 h-6 sm:w-7 sm:h-7"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7V3m8 4V3m-9 8h10m-12 9h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z"
+            />
+          </svg>
+        );
+
+      case "posted":
+        // 📝 Upload/Share Icon
+        return (
+          <svg
+            className="w-6 h-6 sm:w-7 sm:h-7"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 17l4-4 4 4m0 0V3m0 14H8m-2 4h12a2 2 0 002-2V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16a2 2 0 002 2z"
+            />
+          </svg>
+        );
+
+      case "earnings":
+        // 💵 Wallet/Money Stack Icon
+        return (
+          <svg
+            className="w-6 h-6 sm:w-7 sm:h-7"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2m4-3h-8m8 0l-3-3m3 3l-3 3"
+            />
+          </svg>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm p-5 sm:p-6 border border-gray-100 hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className={`p-2 rounded-lg ${iconColor}`}>{renderIcon()}</div>
       </div>
       <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
         {title}
@@ -238,3 +314,4 @@ function StatCard({ title, value, token, iconColor }: any) {
     </div>
   );
 }
+
