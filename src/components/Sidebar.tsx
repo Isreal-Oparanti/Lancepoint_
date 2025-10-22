@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -15,6 +16,12 @@ const Sidebar = () => {
     const address = publicKey.toString();
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
+
+  const handleCopy = useCallback(async () => {
+    if (!publicKey) return;
+    await navigator.clipboard.writeText(publicKey.toString());
+    toast.success("Wallet address copied to clipboard!");
+  }, [publicKey]);
 
   const menuItems = [
     {
@@ -79,10 +86,15 @@ const Sidebar = () => {
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-        
-              <p className="text-xs text-purple-300 truncate">
+
+              <p
+                onClick={handleCopy}
+                title="Click to copy"
+                className="text-xs text-purple-400 truncate cursor-pointer hover:text-purple-600 transition-colors"
+              >
                 {getShortAddress()}
               </p>
+
             </div>
           </div>
         </div>
@@ -96,15 +108,13 @@ const Sidebar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? "bg-white text-purple-900 shadow-lg transform scale-105"
                       : "text-purple-100 hover:bg-purple-800 hover:text-white hover:shadow-md"
-                  }`}
+                    }`}
                 >
-                  <span className={`mr-3 transition-colors duration-200 ${
-                    isActive ? "text-purple-600" : "text-purple-300 group-hover:text-white"
-                  }`}>
+                  <span className={`mr-3 transition-colors duration-200 ${isActive ? "text-purple-600" : "text-purple-300 group-hover:text-white"
+                    }`}>
                     {item.icon}
                   </span>
                   {item.name}
@@ -124,15 +134,13 @@ const Sidebar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex flex-col items-center py-1 px-3 text-xs transition-all duration-200 rounded-lg ${
-                  isActive
+                className={`flex flex-col items-center py-1 px-3 text-xs transition-all duration-200 rounded-lg ${isActive
                     ? "bg-white text-purple-900 shadow-lg transform -translate-y-1"
                     : "text-purple-100 hover:text-white"
-                }`}
+                  }`}
               >
-                <span className={`mb-1 transition-colors duration-200 ${
-                  isActive ? "text-purple-600" : "text-purple-300"
-                }`}>
+                <span className={`mb-1 transition-colors duration-200 ${isActive ? "text-purple-600" : "text-purple-300"
+                  }`}>
                   {item.icon}
                 </span>
                 <span className="text-xs font-medium">{item.name.split(" ")[0]}</span>
@@ -163,15 +171,13 @@ const Sidebar = () => {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 text-sm transition-all duration-200 ${
-                    isActive
+                  className={`flex items-center px-4 py-3 text-sm transition-all duration-200 ${isActive
                       ? "bg-white text-purple-900 font-semibold"
                       : "text-purple-100 hover:bg-purple-700 hover:text-white"
-                  }`}
+                    }`}
                 >
-                  <span className={`mr-3 ${
-                    isActive ? "text-purple-600" : "text-purple-300"
-                  }`}>
+                  <span className={`mr-3 ${isActive ? "text-purple-600" : "text-purple-300"
+                    }`}>
                     {item.icon}
                   </span>
                   {item.name}
