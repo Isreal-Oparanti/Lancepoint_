@@ -198,7 +198,7 @@ export default function BrowseGigs() {
       }
 
       if (error.message?.includes("already been processed")) {
-        toast.success("Success");
+        toast("Transaction already processed, Kindly check your applications");
         return;
       }
 
@@ -208,7 +208,8 @@ export default function BrowseGigs() {
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
-      toast.error(message);
+      toast.error("Unable to apply for Gig at the Moment");
+      console.log(message);
     } finally {
       setIsApplying(false);
     }

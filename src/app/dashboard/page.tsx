@@ -100,7 +100,7 @@ export default function Dashboard() {
       setUserStats(normalizedStats);
     } catch (err) {
       console.error("Failed to fetch stats:", err);
-      toast.error("Unable to fetch your stats.");
+      toast.error("Unable to fetch your stats at the moment.");
     } finally {
       setLoading(false);
     }

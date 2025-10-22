@@ -266,7 +266,8 @@ export default function NewGig() {
       }
 
       if (error.message?.includes("already been processed")) {
-        toast.success("Success"); return;
+        toast("Transaction already processed, Kindly check for your created Gig");
+        return;
       }
 
       let message = error.message || "Transaction failed";
@@ -275,7 +276,8 @@ export default function NewGig() {
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
-      toast.error(message);
+      toast.error("Unable to create Gig at the Moment");
+      console.log(message);
     } finally {
       setIsSubmitting(false);
     }

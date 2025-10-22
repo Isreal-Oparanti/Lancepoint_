@@ -100,7 +100,7 @@ export default function Orders() {
       setMyGigs([...createdByMe, ...appliedFor]);
     } catch (e) {
       console.error("❌ Fetch error:", e);
-      toast.error("Failed to fetch gigs.");
+      toast.error("Failed to fetch gigs at the moment.");
     } finally {
       setLoading(false);
     }
@@ -222,7 +222,7 @@ export default function Orders() {
       }
 
       if (error.message?.includes("already been processed")) {
-        toast.success("Success");
+        toast.success("Transaction already processed, kindly check your Gig.");
         return;
       }
 
@@ -234,7 +234,8 @@ export default function Orders() {
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
-      toast.error(message);
+      toast.error("Unable to approve application at the moment" );
+      console.log(message);
     } finally {
       setLoading(false);
     }
@@ -352,7 +353,8 @@ export default function Orders() {
         );
         if (errorLog) {
           const errorMsg = errorLog.split("Error Message: ")[1];
-          toast.error(`Rejection failed: ${errorMsg}`);
+          toast.error(`Unable to reject submission at the Moment`);
+          console.log(errorMsg);
           return;
         }
       }
@@ -364,7 +366,8 @@ export default function Orders() {
         return;
       }
 
-      toast.error(error.message || "Failed to reject submission");
+      toast.error( "Failed to reject submission");
+      console.log( error.message);
     } finally {
       setLoading(false);
     }
@@ -501,7 +504,7 @@ export default function Orders() {
         if (logMsg) message = logMsg.split("Error Message: ")[1];
       }
 
-      toast.error(message);
+      toast.error("Unable to submit work at the moment");
     } finally {
       setLoading(false);
     }
@@ -637,12 +640,13 @@ export default function Orders() {
         );
         if (errorLog) {
           const errorMsg = errorLog.split("Error Message: ")[1];
-          toast.error(`Transaction failed: ${errorMsg}`);
+          toast.error(`Unable to approve submission at the Moment`);
           return;
         }
       }
 
-      toast.error(error.message || "Failed to approve submission");
+      toast.error( "Failed to approve submission");
+      console.log( error.message);
     } finally {
       setLoading(false);
     }
