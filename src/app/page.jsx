@@ -308,8 +308,8 @@ export default function Home() {
                     icon: "🔐"
                   },
                   { 
-                    title: "Create Your Profile", 
-                    desc: "Set up your freelancer or client profile with your skills and needs",
+                    title: "Account Setup", 
+                    desc: "Automatic Account Setup with your Connected Wallet",
                     icon: "👤"
                   },
                   { 
