@@ -645,7 +645,8 @@ export default function Orders() {
         }
       }
 
-      toast.error( "Failed to approve submission");
+      // toast.error( "Failed to approve submission");
+      toast.loading( "Processing Funds Release. Please check back in a moment.");
       console.log( error.message);
     } finally {
       setLoading(false);
