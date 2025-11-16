@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌐 Lancepoint is an On-Chain Freelance platform built on Solana network
 
-## Getting Started
+**Contract Address / Program ID:** `AkDSbrdvrnfe558WDZEkGuJUayt8nChyog6bcGr1hVFm`
 
-First, run the development server:
+This program is a fully on-chain freelance job escrow system built using the Anchor framework on Solana. It enables clients to create paid job posts, freelancers to apply, and both parties to securely transact using program-controlled escrow accounts. The goal is to provide a transparent, trustless, and automated system for gig management and payments. 🚀
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📌 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The Lancepoint allows clients to publish jobs with locked funds held in a PDA-controlled escrow vault. Freelancers can apply with a resume link, and once approved, they submit their work directly through the program. Every action — posting jobs, approving applications, submitting work, releasing payment, or cancelling — is validated and enforced on-chain. This eliminates middlemen and guarantees safety for both clients and freelancers.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ⚙️ Core Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Clients can create job posts containing titles, descriptions, budgets, and timelines. The program automatically initializes a pure lamport escrow account for each job, ensuring funds are securely locked. Freelancers can submit applications, and clients can approve, reject, cancel, or complete jobs with clear state transitions. The system also tracks user statistics such as monthly gigs and revenue for both clients and freelancers, enabling on-chain analytics and dashboards. 📊
 
-## Learn More
+## 🔒 Secure Escrow & Payments
 
-To learn more about Next.js, take a look at the following resources:
+All funds are held in program-derived escrow accounts, ensuring no human has custody of user money. Payments are released only after client approval of submitted work, using signer-seeded CPI transfers to the freelancer’s wallet. Refunds are automatically executed on job cancellation. Built-in validations, error handling, and strict PDA constraints ensure maximum reliability and safety for all users. 💸
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Program/Smart contract Repo:
+https://github.com/bellobambo/lp-2-new
