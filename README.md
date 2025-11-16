@@ -6,7 +6,7 @@ Lancepoint is a fully on-chain freelance platform built using the Anchor framewo
 
 ## 📌 Overview
 
-The Lancepoint allows clients to publish jobs with locked funds held in a PDA-controlled escrow vault. Freelancers can apply with a resume link, and once approved, they submit their work directly through the program. Every action — posting jobs, approving applications, submitting work, releasing payment, or cancelling — is validated and enforced on-chain. This eliminates middlemen and guarantees safety for both clients and freelancers.
+Lancepoint allows clients to publish jobs with locked funds held in a PDA-controlled escrow vault. Freelancers can apply with a resume link, and once approved, they submit their work directly through the program. Every action posting jobs, approving applications, submitting work, releasing payment, or cancelling is validated and enforced on-chain. This eliminates middlemen and guarantees safety for both clients and freelancers.
 
 ## ⚙️ Core Features
 
