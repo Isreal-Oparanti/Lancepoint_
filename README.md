@@ -2,7 +2,7 @@
 
 **Contract Address / Program ID:** `AkDSbrdvrnfe558WDZEkGuJUayt8nChyog6bcGr1hVFm`
 
-This program is a fully on-chain freelance platform built using the Anchor framework on Solana. It enables clients to create paid job posts, freelancers to apply, and both parties to securely transact using program-controlled escrow accounts. The goal is to provide a transparent, trustless, and automated system for gig management and payments. 🚀
+Lancepoint is a fully on-chain freelance platform built using the Anchor framework on Solana. It enables clients to create paid job posts, freelancers to apply, and both parties to securely transact using program-controlled escrow accounts. The goal is to provide a transparent, trustless, and automated system for gig management and payments. 🚀
 
 ## 📌 Overview
 
